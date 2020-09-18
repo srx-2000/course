@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/total_view"
+        tools:context=".CalculatorFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:id="@+id/recycler_view"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/now_view">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/formula"
+                android:textSize="20dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/answer"
+                android:textSize="25dp"/>
+    </LinearLayout>
+
+    <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:columnCount="4"
+            android:rowCount="5"
+            android:padding="10dp">
+
+        <Button
+                android:text="C"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/cleared"/>
+
+        <Button
+                android:text="delete"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/delete"/>
+
+
+        <Button
+                android:text="%"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/percentage"/>
+
+        <Button
+                android:text="÷"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/division"
+                />
+
+        <Button
+                android:text="7"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/seven"/>
+
+        <Button
+                android:text="8"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/eight"/>
+
+        <Button
+                android:text="9"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/nine"/>
+
+        <Button
+                android:text="X"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/multiplication"/>
+
+        <Button
+                android:text="4"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/four"/>
+
+        <Button
+                android:text="5"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/five"/>
+
+        <Button
+                android:text="6"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/six"/>
+
+        <Button
+                android:text="—"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/minus"/>
+
+        <Button
+                android:text="1"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/one"/>
+
+        <Button
+                android:text="2"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/two"/>
+
+        <Button
+                android:text="3"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/three"/>
+
+        <Button
+                android:text="+"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/add"/>
+
+        <Button
+                android:text="换"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/change"/>
+
+        <Button
+                android:text="0"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/zero"/>
+
+        <Button
+                android:text="."
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/point"/>
+
+        <Button
+                android:text="="
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/equal"/>
+
+    </GridLayout>
+</LinearLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".ConvertFragment"
+              android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center">
+    <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/first"
+            android:spinnerMode="dropdown"
+            android:gravity="center"
+            android:background="@color/blue"
+            android:layout_alignLeft="@id/firstText"
+            android:dropDownWidth="80dp"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:layout_alignLeft="@+id/secondText"
+            android:id="@+id/firstText"/>
+
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:layout_alignRight="@+id/firstText"
+            android:id="@+id/secondText"/>
+</RelativeLayout>
+    <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/second"
+            android:spinnerMode="dropdown"
+            android:gravity="center"
+            android:background="@color/blue"
+            android:dropDownWidth="80dp"
+            android:layout_alignRight="@id/first"/>
+
+
+</LinearLayout>
