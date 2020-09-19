@@ -9,11 +9,18 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".volumeActivity">
+        </activity>
+        <activity android:name=".SystemActivity">
+        </activity>
+        <activity android:name=".LengthActivity">
+        </activity>
         <activity android:name=".MainActivity">
         </activity>
         <activity android:name=".CalculatorFragment">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

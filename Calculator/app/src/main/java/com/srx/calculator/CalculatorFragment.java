@@ -1,9 +1,10 @@
 package com.srx.calculator;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.Intent;
+import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.os.Bundle;
@@ -22,10 +23,10 @@ public class CalculatorFragment extends AppCompatActivity {
         setContentView(R.layout.fragment_calculator);
         init = new InitComponent(this);
         init.initComponent();
-        init.initRecyclerView(list, this);
         setListener();
     }
-    public void setListener(){
+
+    public void setListener() {
         InitComponent.one.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,5 +135,64 @@ public class CalculatorFragment extends AppCompatActivity {
                 init.setText(InitComponent.cleared);
             }
         });
+        InitComponent.tan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                init.setText(InitComponent.tan);
+            }
+        });
+        InitComponent.cos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                init.setText(InitComponent.cos);
+            }
+        });
+        InitComponent.sin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                init.setText(InitComponent.sin);
+            }
+        });
+        InitComponent.part.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                init.setText(InitComponent.part);
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.length:
+                Intent intent1 = new Intent(CalculatorFragment.this, LengthActivity.class);
+                startActivity(intent1);
+                break;
+            case R.id.System:
+                Intent intent2 = new Intent(CalculatorFragment.this, SystemActivity.class);
+                startActivity(intent2);
+                break;
+            case R.id.volume:
+                Intent intent3 = new Intent(CalculatorFragment.this, volumeActivity.class);
+                startActivity(intent3);
+                break;
+            case R.id.help:
+                new AlertDialog.Builder(this)
+                        .setTitle("帮助")
+                        .setMessage("跟普通的计算器一样使用")
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确定", null)
+                        .show();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

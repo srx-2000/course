@@ -10,7 +10,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:id="@+id/recycler_view"/>
 
     <LinearLayout
@@ -96,23 +96,24 @@
                     android:textStyle="bold"
                     android:id="@+id/delete"/>
             <Button
-                    android:text="x^y"
+                    android:text="1/x"
                     android:background="@color/button"
                     android:textColor="@color/buttonText"
                     android:textStyle="bold"
-                    android:id="@+id/Exponentiation"/>
+                    android:id="@+id/part"/>
             <Button
                     android:text="%"
                     android:background="@color/button"
                     android:textColor="@color/buttonText"
                     android:textStyle="bold"
                     android:id="@+id/percentage"/>
+
             <Button
-                    android:text="√x"
+                    android:text="+"
                     android:background="@color/button"
                     android:textColor="@color/buttonText"
                     android:textStyle="bold"
-                    android:id="@+id/Prescribe"/>
+                    android:id="@+id/add"/>
 
             <Button
                     android:text="4"
@@ -138,12 +139,7 @@
                     android:textColor="@color/buttonText"
                     android:textStyle="bold"
                     android:id="@+id/seven"/>
-            <Button
-                    android:text="+"
-                    android:background="@color/button"
-                    android:textColor="@color/buttonText"
-                    android:textStyle="bold"
-                    android:id="@+id/add"/>
+
             <Button
                     android:text="—"
                     android:background="@color/button"
@@ -162,6 +158,12 @@
                     android:textColor="@color/buttonText"
                     android:textStyle="bold"
                     android:id="@+id/division"/>
+            <Button
+                    android:text="换"
+                    android:background="@color/button"
+                    android:textColor="@color/buttonText"
+                    android:textStyle="bold"
+                    android:id="@+id/change"/>
             <Button
                     android:text="."
                     android:background="@color/button"

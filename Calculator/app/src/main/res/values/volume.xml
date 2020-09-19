@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="volume">
+        <item>立方米</item>
+        <item>公石</item>
+        <item>十升</item>
+        <item>立方分米</item>
+        <item>分升</item>
+        <item>厘升</item>
+        <item>立方厘米</item>
+        <item>立方毫米</item>
+    </string-array>
+</resources>

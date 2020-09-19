@@ -37,6 +37,10 @@ public class InitComponent {
     public static Button minus;
     public static Button add;
     public static Button equal;
+    public static Button tan;
+    public static Button cos;
+    public static Button sin;
+    public static Button part;
 
     public static Button nine;
     public static Button eight;
@@ -71,6 +75,10 @@ public class InitComponent {
         minus = activity.findViewById(R.id.minus);
         add = activity.findViewById(R.id.add);
         equal = activity.findViewById(R.id.equal);
+        tan=activity.findViewById(R.id.tan);
+        cos=activity.findViewById(R.id.cos);
+        sin=activity.findViewById(R.id.sin);
+        part=activity.findViewById(R.id.part);
         nine = activity.findViewById(R.id.nine);
         eight = activity.findViewById(R.id.eight);
         seven = activity.findViewById(R.id.seven);
@@ -90,7 +98,6 @@ public class InitComponent {
         focusSignId = 0;
         focusSign = "";
         signCount = 0;
-
     }
 
     public InitComponent(Activity activity) {
@@ -127,6 +134,40 @@ public class InitComponent {
             return false;
     }
 
+
+    private String tan(String number){
+        if (focusSignId == R.id.tan) {
+            Double integer = Double.parseDouble(number);
+            focusSignId = 0;
+            return Math.tan(integer) + "";
+        } else
+            return number;
+    }
+
+    private String cos(String number){
+        if (focusSignId == R.id.cos) {
+            Double integer = Double.parseDouble(number);
+            focusSignId = 0;
+            return Math.cos(integer) + "";
+        } else
+            return number;
+    }
+    private String sin(String number){
+        if (focusSignId == R.id.tan) {
+            Double integer = Double.parseDouble(number);
+            focusSignId = 0;
+            return Math.sin(integer) + "";
+        } else
+            return number;
+    }
+    private String part(String number){
+        if (focusSignId == R.id.tan) {
+            Double integer = Double.parseDouble(number);
+            focusSignId = 0;
+            return (1/integer) + "";
+        } else
+            return number;
+    }
     private String percentage(String number) {
         if (focusSignId == R.id.percentage) {
             Double integer = Double.parseDouble(number);
@@ -349,6 +390,30 @@ public class InitComponent {
                 signCount = 0;
                 formula.setText("0");
                 result.setText("0");
+                break;
+            case R.id.tan:
+                perString = formula.getText().toString();
+                resultNum = result.getText().toString();
+                focusSignId = R.id.tan;
+                result.setText(tan(resultNum));
+                break;
+            case R.id.cos:
+                perString = formula.getText().toString();
+                resultNum = result.getText().toString();
+                focusSignId = R.id.cos;
+                result.setText(cos(resultNum));
+                break;
+            case R.id.sin:
+                perString = formula.getText().toString();
+                resultNum = result.getText().toString();
+                focusSignId = R.id.sin;
+                result.setText(sin(resultNum));
+                break;
+            case R.id.part:
+                perString = formula.getText().toString();
+                resultNum = result.getText().toString();
+                focusSignId = R.id.part;
+                result.setText(part(resultNum));
                 break;
         }
     }
