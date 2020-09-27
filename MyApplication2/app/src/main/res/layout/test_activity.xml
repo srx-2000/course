@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".lifeCycle.testActivity">
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+        <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:hint="请输入密码"
+                android:inputType="textPassword"
+                android:textColor="#000000"
+                android:textColorHint="#55000000"
+                android:background="@null"
+                android:textSize="20sp"/>
+        <CheckBox
+                android:checked="false"
+                android:id="@+id/cbDisplayPassword"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+
+</LinearLayout>

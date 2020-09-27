@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/total_view"
+        tools:context=".Calculator.Calculator">
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recycler_view"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/now_view">
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/formula"
+                android:textSize="20dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/answer"
+                android:textSize="25dp"/>
+    </LinearLayout>
+
+    <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="4"
+            android:rowCount="5">
+
+        <Button
+                android:text="C"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/Cleared"/>
+
+        <ImageButton
+                android:background="@drawable/delete"
+                android:layout_width="96dp"
+                android:layout_height="24dp"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/delete"/>
+
+
+        <Button
+                android:text="%"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/percentage"/>
+
+        <Button
+                android:text="÷"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/division"/>
+
+        <Button
+                android:text="7"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/seven"/>
+
+        <Button
+                android:text="8"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/eight"/>
+
+        <Button
+                android:text="9"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/nine"/>
+
+        <Button
+                android:text="X"
+                android:background="@color/button"
+                android:textColor="@color/buttonText"
+                android:textStyle="bold"
+                android:id="@+id/multiplication"/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+        <Button/>
+
+    </GridLayout>
+</LinearLayout>

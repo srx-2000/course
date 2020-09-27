@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.MainActivity"
+        android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/textview_border"
+            android:padding="10dp">
+
+        <EditText
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/edit_query"
+                android:background="@null"
+                android:hint="请输入要查询的单词"
+                />
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/query"
+                android:onClick="queryWord"
+                android:text="搜索"
+                />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/word_list_activity"
+            android:paddingTop="15dp"/>
+
+</LinearLayout>

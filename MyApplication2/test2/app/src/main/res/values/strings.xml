@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">WordBook</string>
+    <string name="test_word">testWord</string>
+    <string name="test_mean">测试单词解释</string>
+    <string name="test_example">this is a test sentence for test word</string>
+    <string name="test_id">1.</string>
+    <string name="test_example_mean">这是一个为测试单词写的测试句子</string>
+</resources>
