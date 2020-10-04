@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="10dp">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/textview_border"
+            android:padding="8dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/test_id"
+                android:textSize="23dp"
+                android:id="@+id/word_id"
+                android:fontFamily="sans-serif-condensed-medium"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/word"
+                android:text="@string/test_word"
+                android:textSize="28dp"
+                android:paddingLeft="15dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                />
+        </LinearLayout>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/mean"
+                android:text="@string/test_mean"
+                android:paddingLeft="38dp"
+                android:textSize="15dp"
+                android:fontFamily="sans-serif"/>
+    </LinearLayout>
+
+
+</LinearLayout>
