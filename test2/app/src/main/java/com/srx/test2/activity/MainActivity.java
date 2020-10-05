@@ -1,11 +1,10 @@
 package com.srx.test2.activity;
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.text.Layout;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
@@ -15,12 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.srx.test2.DB.DBMethod;
 import com.srx.test2.R;
 import com.srx.test2.adapter.WordListAdapter;
+import com.srx.test2.contentProvider.ContentProviderUtil;
 import com.srx.test2.entities.ExampleSentence;
 import com.srx.test2.entities.Word;
-import com.srx.test2.fragment.DetailFragment;
 import com.srx.test2.fragment.WordListFragment;
 
 import java.util.ArrayList;
@@ -30,31 +28,42 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText searchText;
     private List<Word> wordList = new ArrayList<>();
-    private DBMethod dbMethod = new DBMethod(this, "wordBook");
     private WordListAdapter wordAdapter;
     private WordListFragment listFragment;
+    private ContentProviderUtil util;
+    private ContentResolver resolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-        setContentView(R.layout.activity_main);
-        initComponent();
-        initList();
         if (isLand()) {
-            listFragment = new WordListFragment(wordList, MainActivity.this,dbMethod);
+            setContentView(R.layout.land);
+            initComponent();
+            initResolverAndUtil();
+            initList();
+            listFragment = new WordListFragment(wordList, MainActivity.this, util);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.listFragment, listFragment)
                     .commit();
         } else {
+            setContentView(R.layout.activity_main);
+            initComponent();
+            initResolverAndUtil();
+            initList();
             initRecyclerView(wordList);
         }
     }
 
+    public void initResolverAndUtil() {
+        this.resolver = getContentResolver();
+        this.util = new ContentProviderUtil(this.resolver);
+    }
+
     //调取数据库中数据，并以list存储，以便在recyclerView中使用
     public void initList() {
-        wordList = dbMethod.queryWord();
+        wordList = util.queryWord();
     }
 
     public void initComponent() {
@@ -63,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public List<Word> refreshList() {
-        List<Word> words = dbMethod.queryWord();
+        List<Word> words = util.queryWord();
         return words;
     }
 
@@ -119,16 +128,16 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 111 && resultCode == 222) {
             String word = data.getStringExtra("word");
             String wordMean = data.getStringExtra("wordMean");
-            dbMethod.insertWord(new Word(word, wordMean));
-            String wordId = dbMethod.queryWordId(word, wordMean);
+            util.insertWord(new Word(word, wordMean));
+            String wordId = util.queryWordId(word, wordMean);
             String[] sentenceLists = data.getStringArrayExtra("sentenceList");
             String[] sentenceMeanLists = data.getStringArrayExtra("sentenceMeanList");
             for (int i = 0; i < sentenceLists.length; i++) {
-                dbMethod.insertSentence(new ExampleSentence(wordId, sentenceLists[i], sentenceMeanLists[i]));
+                util.insertSentence(new ExampleSentence(wordId, sentenceLists[i], sentenceMeanLists[i]));
             }
         }
         if (isLand()) {
-            listFragment.Resume(dbMethod);
+            listFragment.Resume(util);
         } else {
             initRecyclerView(refreshList());
         }
@@ -144,9 +153,9 @@ public class MainActivity extends AppCompatActivity {
     public void queryWord(View view) {
         String string = searchText.getText().toString();
         if (isLand()) {
-            listFragment.queryWord(dbMethod, string);
+            listFragment.queryWord(util, string);
         } else {
-            List<Word> words = dbMethod.queryWordByBlurry(string);
+            List<Word> words = util.queryWordByBlurry(string);
             initRecyclerView(words);
         }
     }
@@ -171,12 +180,12 @@ public class MainActivity extends AppCompatActivity {
                                     // 此时才可以通过该方法获取到横屏时wordListFragment的adapter
                                     // 若是竖屏，那么就会调用initRecyclerView方法，对adapter进行初始化
                                     initAdapter();
-                                    dbMethod.deleteWord(wordAdapter.getWordId());//通过适配器中的get方法获取单词id
-                                    dbMethod.deleteSentenceByword(wordAdapter.getWordId());
-                                    listFragment.Resume(dbMethod);
+                                    util.deleteWord(wordAdapter.getWordId());//通过适配器中的get方法获取单词id
+                                    util.deleteSentenceByWord(wordAdapter.getWordId());
+                                    listFragment.Resume(util);
                                 } else {
-                                    dbMethod.deleteWord(wordAdapter.getWordId());//通过适配器中的get方法获取单词id
-                                    dbMethod.deleteSentenceByword(wordAdapter.getWordId());
+                                    util.deleteWord(wordAdapter.getWordId());//通过适配器中的get方法获取单词id
+                                    util.deleteSentenceByWord(wordAdapter.getWordId());
                                     initRecyclerView(refreshList());
                                 }
                             }
@@ -196,5 +205,29 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setContentView(R.layout.land);
+            initComponent();
+            initResolverAndUtil();
+            initList();
+            listFragment = new WordListFragment(wordList, MainActivity.this, util);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.listFragment, listFragment)
+                    .commit();
+            Toast.makeText(this, "现在是横屏", Toast.LENGTH_LONG).show();
+        } else {
+            setContentView(R.layout.activity_main);
+            initRecyclerView(wordList);
+            initComponent();
+            initResolverAndUtil();
+            initList();
+            Toast.makeText(this, "现在是竖屏", Toast.LENGTH_LONG).show();
+        }
     }
 }

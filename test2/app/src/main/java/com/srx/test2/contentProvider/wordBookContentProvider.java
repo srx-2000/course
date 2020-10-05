@@ -4,11 +4,7 @@ import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import com.google.gson.Gson;
 import com.srx.test2.DB.DBHelper;
-import com.srx.test2.DB.DBMethod;
-import com.srx.test2.entities.ExampleSentence;
-import com.srx.test2.entities.Word;
 
 public class wordBookContentProvider extends ContentProvider {
 
@@ -42,9 +38,15 @@ public class wordBookContentProvider extends ContentProvider {
         switch (matcher.match(uri)) {
             case 3:
                 count = dbWriter.delete("word", selection, selectionArgs);
+                if (count > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
                 break;
             case 4:
                 count = dbWriter.delete("sentence", selection, selectionArgs);
+                if (count > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
                 break;
         }
         return count;
@@ -101,12 +103,21 @@ public class wordBookContentProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         initDBer();
+        int row = 0;
         switch (matcher.match(uri)) {
             case 7:
-                return dbWriter.update("word", values, selection, selectionArgs);
+                row = dbWriter.update("word", values, selection, selectionArgs);
+                if (row > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                break;
             case 8:
-                return dbWriter.update("sentence", values, selection, selectionArgs);
+                row = dbWriter.update("sentence", values, selection, selectionArgs);
+                if (row > 0) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                break;
         }
-        return 0;
+        return row;
     }
 }

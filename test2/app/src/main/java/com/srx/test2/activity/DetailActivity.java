@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.srx.test2.DB.DBMethod;
 import com.srx.test2.R;
 import com.srx.test2.adapter.ExampleSentenceAdapter;
+import com.srx.test2.contentProvider.ContentProviderUtil;
 import com.srx.test2.entities.ExampleSentence;
 import com.srx.test2.entities.Word;
 
@@ -28,7 +28,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView wordMean;
     private TextView word;
     private List<ExampleSentence> list = new ArrayList<>();
-    private DBMethod dbMethod=new DBMethod(this,"wordBook");
+    private ContentProviderUtil util;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +43,8 @@ public class DetailActivity extends AppCompatActivity {
     public void initDetail() {
         Intent intent=getIntent();
         String word_id = intent.getStringExtra("word_id");
-        list = dbMethod.querySentence(word_id);
-        Word word = dbMethod.queryWord(word_id);
+        list = util.querySentence(word_id);
+        Word word = util.queryWord(word_id);
         this.wordMean.setText(word.getWordMean());
         this.word.setText(word.getWord());
     }
@@ -51,6 +52,7 @@ public class DetailActivity extends AppCompatActivity {
     public void initComponent(){
         this.wordMean=findViewById(R.id.word_mean_activity);
         this.word=findViewById(R.id.word_title);
+        util=new ContentProviderUtil(this.getContentResolver());
     }
 
     public void initRecyclerView() {
