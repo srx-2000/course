@@ -60,6 +60,7 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.ViewHo
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.add(0, 0, Menu.NONE, "删除");
+            menu.add(0, 1, Menu.NONE, "更改");
         }
     }
 

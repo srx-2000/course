@@ -1,12 +1,11 @@
 package com.srx.test2.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import com.srx.test2.R;
 
 import java.util.ArrayList;
@@ -65,9 +64,10 @@ public class insertWord extends AppCompatActivity {
         setResult(222,intent);
         finish();
     }
+
     public void back(View view){
-        Intent intent=new Intent();
-        setResult(222,intent);
+        Intent intent=new Intent(this,MainActivity.class);
+        setResult(333,intent);
         finish();
     }
 

@@ -36,7 +36,8 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:background="@drawable/speaker"
-                        android:id="@+id/word_speaker"/>
+                        android:id="@+id/word_speaker"
+                        android:onClick="playWord"/>
 
                 <TextView
                         android:layout_width="40dp"

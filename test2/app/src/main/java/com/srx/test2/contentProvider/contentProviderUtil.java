@@ -5,8 +5,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
-import androidx.annotation.RequiresApi;
 import com.srx.test2.entities.ExampleSentence;
 import com.srx.test2.entities.Word;
 
@@ -24,10 +22,12 @@ public class ContentProviderUtil {
     public static String queryWord = baseUri + providerUri.QUERY_WORD;
     public static String insertWord = baseUri + providerUri.INSERT_WORD;
     public static String deleteWord = baseUri + providerUri.DELETE_WORD;
+    public static String updateWord = baseUri + providerUri.UPDATE_WORD;
 
     public static String deleteSentences = baseUri + providerUri.DELETE_SENTENCES;
     public static String querySentences = baseUri + providerUri.QUERY_SENTENCES;
     public static String insertSentence = baseUri + providerUri.INSERT_SENTENCES;
+
 
     public ContentProviderUtil(ContentResolver resolver) {
         this.resolver = resolver;
@@ -129,6 +129,7 @@ public class ContentProviderUtil {
 
     /**
      * 根据给出的单词id查询单词详情
+     *
      * @param wordId
      * @return
      */
@@ -151,6 +152,7 @@ public class ContentProviderUtil {
 
     /**
      * 根据给出的单词id查询句子
+     *
      * @param wordId
      * @return
      */
@@ -176,6 +178,7 @@ public class ContentProviderUtil {
 
     /**
      * 根据给出的句子插入一个句子
+     *
      * @param sentence
      * @return
      */
@@ -191,6 +194,7 @@ public class ContentProviderUtil {
 
     /**
      * 根据句子id删除特定的句子，一般用不到，因为不写相应接口
+     *
      * @param sentenceId
      * @return
      */
@@ -203,6 +207,7 @@ public class ContentProviderUtil {
 
     /**
      * 根据传入的单词id删除句子，删除单词的时候使用
+     *
      * @param wordId
      * @return
      */
@@ -211,6 +216,21 @@ public class ContentProviderUtil {
         String selection = "word_id=?";
         String[] selectArg = {wordId};
         return resolver.delete(uri, selection, selectArg);
+    }
+
+    /**
+     * 改词
+     * @param word
+     * @return
+     */
+    public int updateWord(Word word) {
+        Uri uri = Uri.parse(updateWord);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("word", word.getWord());
+        contentValues.put("word_mean", word.getWordMean());
+        String selection = "word_id=?";
+        String[] selectionArg = {word.getWordId()};
+        return resolver.update(uri, contentValues, selection, selectionArg);
     }
 
 

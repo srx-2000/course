@@ -16,7 +16,7 @@
             android:padding="10dp">
 
         <EditText
-                android:layout_width="300dp"
+                android:layout_width="190dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/edit_query"
                 android:background="@null"
@@ -26,9 +26,16 @@
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/query"
-                android:onClick="queryWord"
-                android:text="搜索"
+                android:id="@+id/query_database"
+                android:onClick="queryDatabase"
+                android:text="搜索生词本"
+                />
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/query_api"
+                android:onClick="queryAip"
+                android:text="百度翻译"
                 />
 
     </LinearLayout>

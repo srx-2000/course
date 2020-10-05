@@ -10,26 +10,25 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
-        <activity android:name=".activity.testActivity">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN"/>-->
-
-            <!--                <category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--            </intent-filter>-->
-        </activity>
+        <service
+                android:name=".Service.MediaPlayerService"
+                android:enabled="true"
+                android:exported="true">
+        </service>
 
         <provider
-                android:enabled="true"
-                android:name="com.srx.test2.contentProvider.wordBookContentProvider"
+                android:name=".contentProvider.wordBookContentProvider"
                 android:authorities="com.srx.wordBook"
-                android:exported="true"
-                >
+                android:enabled="true"
+                android:exported="true">
         </provider>
 
         <activity android:name=".activity.insertWord">
         </activity>
-        <activity android:name=".activity.DetailActivity"
+        <activity
+                android:name=".activity.DetailActivity"
                 android:configChanges="screenSize|orientation">
+
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN"/> -->
 
@@ -47,5 +46,6 @@
             </intent-filter>
         </activity>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>
