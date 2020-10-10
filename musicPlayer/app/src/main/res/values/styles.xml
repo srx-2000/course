@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="TextFont_after">
+        <item name="android:textSize">17dp</item>
+        <item name="android:color">#130f40</item>
+        <item name="android:fontWeight" tools:targetApi="o">20</item>
+    </style>
+
+    <style name="TextFont_before">
+        <item name="android:textSize">15dp</item>
+        <item name="android:color">#95afc0</item>
+        <item name="android:fontWeight" tools:targetApi="o">10</item>
+    </style>
+
+</resources>

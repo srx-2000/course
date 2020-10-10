@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".Player.playerPageFragment"
+              android:orientation="vertical">
+
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:text="fragment3"
+            android:layout_marginBottom="0dp"
+            android:layout_alignBottom="@+id/seek_bar"/>
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:id="@+id/comment"
+                android:src="@drawable/comment"
+                android:layout_centerVertical="true"
+                />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:id="@+id/lyrics"
+                android:src="@drawable/lyrics"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/begin_time"
+                android:text="10:20"
+                android:textSize="12dp"/>
+        <SeekBar
+                android:layout_width="300dp"
+                android:padding="10dp"
+                android:layout_height="45dp"
+                android:thumb="@drawable/point"
+                android:id="@+id/seek_bar"
+                android:layout_above="@id/player_bar_layout"
+                android:maxWidth="300dp"
+                android:max="100"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/end_time"
+                android:textSize="12dp"
+                android:text="10:20"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/player_bar_layout"
+            android:layout_marginBottom="20dp"
+            >
+
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:id="@+id/cycle"
+                android:src="@drawable/cycle"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:id="@+id/previous"
+                android:src="@drawable/previous"
+                android:layout_toLeftOf="@id/play_status"
+                android:paddingRight="10dp"
+                android:layout_centerVertical="true"
+                />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:id="@+id/play_status"
+                android:layout_centerInParent="true"
+                android:src="@drawable/start"
+                android:layout_centerVertical="true"
+                />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:id="@+id/next"
+                android:src="@drawable/next"
+                android:layout_toRightOf="@id/play_status"
+                android:paddingLeft="10dp"
+                android:layout_centerVertical="true"
+                />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/love"
+                android:src="@drawable/love"
+                android:layout_toRightOf="@id/next"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="40dp"
+                android:clickable="true"
+                />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>
