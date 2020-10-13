@@ -5,6 +5,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.srx.musicplayer.jsonEntity.Data;
 import com.srx.musicplayer.jsonEntity.SongList;
+import com.srx.musicplayer.jsonEntity.SongList2;
 import okhttp3.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -22,7 +23,8 @@ import java.util.List;
 public class HTTPUtil {
 
     public static String url1 = "https://api.imjad.cn/cloudmusic";
-    public static String url2 = "http://musicapi.leanapp.cn";
+    public static String url2 = "https://musicapi.leanapp.cn";
+    private static OkHttpClient client;
 
     public static String getUrl(boolean flag) {
         if (flag)
@@ -47,7 +49,7 @@ public class HTTPUtil {
      * @return
      */
     private static Response doGetMethod1(String type, String id) {
-        OkHttpClient client = new OkHttpClient();
+        client = new OkHttpClient();
         final Request request = new Request.Builder()
                 .get()
                 .url(url1 + "?type=" + type + "&id=" + id)
@@ -76,7 +78,7 @@ public class HTTPUtil {
         return url;
     }
 
-    public static List<String> getSongList(String listId) {
+    public static List<String> getSongListMethod1(String listId) {
         String string = null;
         try {
             Response response = doGetMethod1("playlist", listId);
@@ -92,17 +94,18 @@ public class HTTPUtil {
             String id = String.valueOf(t.getId());
             songList.add(id);
         }
+
         return songList;
     }
 
     public static Response doGetMethod2(String path, String id) {
-        Response response = null;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .get()
                 .url(url2+path+"?id="+id)
                 .build();
         Call call = client.newCall(request);
+        Response response = null;
         try {
             response = call.execute();
         } catch (IOException e) {
@@ -111,7 +114,26 @@ public class HTTPUtil {
         return response;
     }
 
-    public static List<String>
+
+    public static List<String> getSongListMethod2(String listId) {
+        String string = null;
+        try {
+            Response response = doGetMethod2("/playlist/detail", listId);
+            string = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<String> songList = new ArrayList<>();
+        Gson gson = new Gson();
+        SongList list = gson.fromJson(string, SongList.class);
+        List<SongList.PlaylistEntity.TracksEntity> tracks = list.getPlaylist().getTracks();
+        for (SongList.PlaylistEntity.TracksEntity t : tracks) {
+            String id = String.valueOf(t.getId());
+            songList.add(id);
+        }
+        return songList;
+    }
+//    public static List<String>
 
 
 

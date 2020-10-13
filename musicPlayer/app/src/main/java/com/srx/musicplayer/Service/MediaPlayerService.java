@@ -20,14 +20,13 @@ import java.io.IOException;
 public class MediaPlayerService extends Service {
 
 
+    private MediaPlayer nextPlayer;//该变量的主要任务就是讲currentUrl与mp3Url不同这个消息传出去，传给nextOrPreviousSong方法
     private MediaPlayer player;
     private String currentUrl = "";
     private SeekBar seekBar;
     private int duration;
+    private int nextDuration;
     private TextView textView;
-
-    public MediaPlayerService(Context context) {
-    }
 
     public MediaPlayerService() {
     }
@@ -36,12 +35,11 @@ public class MediaPlayerService extends Service {
     public class MusicServiceBinder extends Binder {
 
         public MediaPlayer createPlayer(String mp3Url) {
-            if (player == null && !currentUrl.equals(mp3Url)) {
+            if (player == null) {
                 try {
                     Uri local = Uri.parse(mp3Url);
-                    player = new MediaPlayer();
-                    player.setDataSource(MediaPlayerService.this, local);
-                    player.prepare();
+                    player = MediaPlayer.create(MediaPlayerService.this, local);
+                    currentUrl = mp3Url;
                     duration = player.getDuration();
                     seekBar.setMax(duration);
                     handler.post(run);
@@ -49,13 +47,27 @@ public class MediaPlayerService extends Service {
                     e.printStackTrace();
                 }
                 return player;
-            } else
+            } else {
+                //如果当前的地址与传入的地址不同，那么就是下一首了，那么将nextPlayer初始化；
+                if (!currentUrl.equals(mp3Url)) {
+                    try {
+                        Uri local = Uri.parse(mp3Url);
+                        nextPlayer = MediaPlayer.create(MediaPlayerService.this, local);
+                        currentUrl = mp3Url;
+                        nextDuration = nextPlayer.getDuration();
+                        seekBar.setMax(nextDuration);
+                        handler.post(run);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return nextPlayer;
+                }
                 return player;
+            }
         }
 
-        public void play(MediaPlayer player) {
+        public void play() {
             if (player != null) {
-                MediaPlayerService.this.player = player;
                 if (!player.isPlaying())
                     player.start();
                 else
@@ -65,33 +77,21 @@ public class MediaPlayerService extends Service {
             }
         }
 
-        public void previousSong() {
-
-        }
-
         public Message nextOrPreviousSong(final String songId) {
             String jsonString = HTTPUtil.getSingleSongMp3(songId);
             createPlayer(jsonString);
+            if (nextPlayer != null && !player.equals(nextPlayer)) {
+                player.stop();
+                player = nextPlayer;
+            }
             Message message = new Message();
             message.what = 1;
             message.obj = player;
-            play(player);
             return message;
-        }
-
-        public void cyclePlaying() {
-
         }
 
         public void randomPlaying() {
 
-        }
-
-        public boolean isPlaying() {
-            if (player != null)
-                return player.getCurrentPosition() == player.getDuration();
-            else
-                return false;
         }
 
         public void setSeekBar(SeekBar seekBar) {
@@ -103,7 +103,7 @@ public class MediaPlayerService extends Service {
                         int s = progress / 1000;
                         String total = s / 60 + ":" + s % 60;
                         textView.setText(total);
-                    }else{
+                    } else {
                         textView.setText("0:00");
                     }
                 }
@@ -115,8 +115,10 @@ public class MediaPlayerService extends Service {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    player.seekTo(seekBar.getProgress());
-                    handler.postDelayed(run, 1000);
+                    if (seekBar != null && player != null) {
+                        player.seekTo(seekBar.getProgress());
+                        handler.postDelayed(run, 1000);
+                    }
                 }
             });
         }
@@ -125,9 +127,6 @@ public class MediaPlayerService extends Service {
             MediaPlayerService.this.textView = view;
         }
 
-        public int getCurrentPosition() {
-            return player.getCurrentPosition();
-        }
     }
 
 

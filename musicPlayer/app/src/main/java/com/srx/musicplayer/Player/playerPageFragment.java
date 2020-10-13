@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.net.sip.SipSession;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,6 +21,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,10 +36,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.w3c.dom.Text;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.sql.Time;
+import java.util.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,8 +55,14 @@ public class playerPageFragment extends Fragment {
     private MediaPlayer player;
     private ImageView next;
     private ImageView previous;
+    private ImageView loop;
     private int songCount = 0;
     private List<String> songList = new ArrayList<>();
+    private List<String> currentList = new ArrayList<>();
+    private String songListId = "5262477176";
+    private Timer timer;
+    private int playing_method = 0;//用于设定播放方式：0为初始值，1为循环播放，2为随机播放。
+
 
     public playerPageFragment() {
         // Required empty public constructor
@@ -69,20 +75,95 @@ public class playerPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_player_page, container, false);
         initComponent(view);
         bindService();
-        playAndPause();
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if ((songList.size()-1) != songCount) {
-                    nextSong(songList.get(songCount));
-                    songCount++;
-                }else{
-                    songCount=(songCount-songList.size())+1;
-                }
-            }
-        });
+        play_status.setOnClickListener(listener);
+        next.setOnClickListener(listener);
+        previous.setOnClickListener(listener);
+        loop.setOnClickListener(listener);
+        loopPlaying();
         return view;
     }
+
+
+    View.OnClickListener listener = new ImageView.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.play_status:
+                    if (player == null) {
+                        Toast.makeText(getActivity(), "正在加载...请稍后", Toast.LENGTH_SHORT).show();
+                        initCurrentList();
+                    } else {
+                        if (!playStatus) {
+                            //开启线程进行搜索，并返回歌曲mp3形式来的url
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    binder.play();
+                                }
+                            }).start();
+                            play_status.setImageResource(R.drawable.pause);
+                            playStatus = true;
+                        } else {
+                            binder.play();
+                            play_status.setImageResource(R.drawable.start);
+                            playStatus = false;
+                        }
+                    }
+                    break;
+                case R.id.next:
+                    if (songListId.equals("") | songListId == null||currentList.size()==0) {
+                        Toast.makeText(getActivity(), "请选择一个歌单", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (currentList.size() == 0) {
+                            Toast.makeText(getActivity(), "获取歌单中...请稍后", Toast.LENGTH_SHORT).show();
+                            initCurrentList();
+                        } else {
+                            if ((currentList.size() - 1) != songCount) {
+                                nextSong(currentList.get(songCount));
+                                songCount++;
+                            } else {
+                                songCount = (songCount - currentList.size()) + 1;
+                            }
+                        }
+                    }
+                    break;
+                case R.id.previous:
+                    if (songListId.equals("") | songListId == null||currentList.size()==0) {
+                        Toast.makeText(getActivity(), "请选择一个歌单", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (currentList.size() == 0) {
+                            Toast.makeText(getActivity(), "获取歌单中...请稍后", Toast.LENGTH_SHORT).show();
+                            initCurrentList();
+                        } else {
+                            if (songCount > 0) {
+                                nextSong(currentList.get(songCount));
+                                songCount--;
+                            } else {
+                                songCount = (currentList.size() + songCount) - 1;
+                            }
+                        }
+                    }
+                    break;
+                case R.id.loop:
+                    if (playing_method == 0 || playing_method == 2) {
+                        if (songListId.equals("") | songListId == null||currentList.size()==0) {
+                            Toast.makeText(getActivity(), "请选择一个歌单", Toast.LENGTH_SHORT).show();
+                        } else {
+                            loopPlaying();
+                        }
+                    } else if (playing_method == 0 || playing_method == 1) {
+                        if (songListId.equals("") | songListId == null||currentList.size()==0) {
+                            Toast.makeText(getActivity(), "请选择一个歌单", Toast.LENGTH_SHORT).show();
+                        } else {
+                            randomPlaying();
+                        }
+                    }
+                    break;
+            }
+
+        }
+    };
+
 
     public void initComponent(View view) {
         play_status = view.findViewById(R.id.play_status);
@@ -91,9 +172,38 @@ public class playerPageFragment extends Fragment {
         seekBar = view.findViewById(R.id.seek_bar);
         next = view.findViewById(R.id.next);
         previous = view.findViewById(R.id.previous);
-        getSongList("5261241463");
-
+        loop = view.findViewById(R.id.loop);
     }
+
+    public void initCurrentList() {
+        if (songList.size() == 0)
+            getSongList(songListId);
+        for (String s : songList) {
+            currentList.add(s);
+        }
+        if (currentList.size() != 0)
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Message message = new Message();
+                    message.what = 3;
+                    message.obj = binder.createPlayer(HTTPUtil.getSingleSongMp3(currentList.get(songCount)));
+                    handler.sendMessage(message);
+                }
+            }).start();
+    }
+
+    /**
+     * 增删歌单
+     */
+    public void addSongForList(String songId) {
+        currentList.add(songId);
+    }
+
+    public void clearSongForList() {
+        currentList.clear();
+    }
+
     /**
      * 获取评论
      */
@@ -108,33 +218,6 @@ public class playerPageFragment extends Fragment {
 
     }
 
-    public void playAndPause() {
-        play_status.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (player == null) {
-                    Toast.makeText(getActivity(), "请点击下一首进行播放", Toast.LENGTH_LONG).show();
-                } else {
-                    if (!playStatus) {
-                        //开启线程进行搜索，并返回歌曲mp3形式来的url
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                binder.play(player);
-                            }
-                        }).start();
-                        play_status.setImageResource(R.drawable.start);
-                        playStatus = true;
-                    } else {
-                        binder.play(player);
-                        play_status.setImageResource(R.drawable.pause);
-                        playStatus = false;
-                    }
-                }
-            }
-        });
-    }
-
 
     public void nextSong(final String songId) {
         new Thread(new Runnable() {
@@ -142,25 +225,102 @@ public class playerPageFragment extends Fragment {
             public void run() {
                 playStatus = true;
                 Message message = binder.nextOrPreviousSong(songId);
-                MediaPlayer nextPlayer = (MediaPlayer) message.obj;
                 handler.sendMessage(message);
-                binder.play(nextPlayer);
+                binder.play();
+                play_status.setImageResource(R.drawable.pause);
+                playStatus = true;
             }
         }).start();
     }
 
+    /**
+     * 随机播放
+     */
+    public void randomPlaying() {
+        if(playing_method==2){
+            timer=null;
+        }
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Random random = new Random();
+                final int i = random.nextInt(currentList.size());
+                if (currentList.size() != 0 & player != null) {
+                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            nextSong(currentList.get(i));
+                            songCount = i;
+                            if (songCount >= currentList.size()) {
+                                songCount -= currentList.size();
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        timer.schedule(task, 0, 1000);
+        playing_method = 2;
+        loop.setImageResource(R.drawable.random);
 
-    public void loopPlaying(final String listSongId) {
 
     }
 
-    public void getSongList(final String listSongId) {
+    /**
+     * 循环播放
+     */
+    public void loopPlaying() {
+        if(playing_method==2){
+            timer=null;
+        }
+        timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (currentList.size() != 0 & player != null) {
+                    player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            nextSong(currentList.get(songCount));
+                            songCount++;
+                            if (songCount >= currentList.size()) {
+                                songCount -= currentList.size();
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        timer.schedule(task, 0, 1000);
+        playing_method = 1;
+        loop.setImageResource(R.drawable.cycle);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        initCurrentList();
+
+
+    }
+
+    /**
+     * 问题在于没跑进去，也就是这个线程在初始化的时候根本没跑
+     *
+     * @param listId
+     */
+    public void getSongList(final String listId) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                songList = HTTPUtil.getSongList(listSongId);
+                Message message1 = new Message();
+                message1.obj = HTTPUtil.getSongListMethod2(listId);
+                message1.what = 2;
+                handler.sendMessage(message1);
             }
         }).start();
+
     }
 
     public void bindService() {
@@ -178,7 +338,6 @@ public class playerPageFragment extends Fragment {
             binder = (MediaPlayerService.MusicServiceBinder) service;
             binder.setSeekBar(seekBar);
             binder.setBeginText(startTime);
-//            time.schedule(timerTask,0,500);
         }
 
         @Override
@@ -194,12 +353,24 @@ public class playerPageFragment extends Fragment {
             if (msg.what == 1) {
                 player = (MediaPlayer) msg.obj;
                 int time = player.getDuration();
-                if (0 != time) {
+                if (time > 0) {
                     int s = time / 1000;
                     String total = s / 60 + ":" + s % 60;
                     endTime.setText(total);
                 } else {
-                    endTime.setText("0:00");
+                    endTime.setText("00:00");
+                }
+            } else if (msg.what == 2) {
+                songList = (List<String>) msg.obj;
+            } else if (msg.what == 3) {
+                player = (MediaPlayer) msg.obj;
+                int time = player.getDuration();
+                if (time > 0) {
+                    int s = time / 1000;
+                    String total = s / 60 + ":" + s % 60;
+                    endTime.setText(total);
+                } else {
+                    endTime.setText("00:00");
                 }
             }
         }
@@ -209,5 +380,6 @@ public class playerPageFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         activity.unbindService(con);
+        timer.cancel();
     }
 }
