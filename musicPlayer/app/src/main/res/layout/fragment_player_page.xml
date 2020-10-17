@@ -4,7 +4,9 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               tools:context=".Player.playerPageFragment"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:id="@+id/totalLayout"
+        >
 
 
     <TextView
@@ -20,7 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
         <ImageView
                 android:layout_width="wrap_content"
@@ -55,6 +58,7 @@
                 android:id="@+id/begin_time"
                 android:text="0:00"
                 android:textSize="12dp"/>
+
         <SeekBar
                 android:layout_width="300dp"
                 android:padding="10dp"
@@ -65,6 +69,7 @@
                 android:maxWidth="300dp"
                 android:max="100"
                 />
+
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,6 +106,7 @@
                 android:src="@drawable/previous"
                 android:layout_toLeftOf="@id/play_status"
                 android:paddingRight="10dp"
+                android:background="@drawable/button"
                 android:layout_centerVertical="true"
                 />
 
@@ -122,6 +128,7 @@
                 android:src="@drawable/next"
                 android:layout_toRightOf="@id/play_status"
                 android:paddingLeft="10dp"
+                android:background="@drawable/button"
                 android:layout_centerVertical="true"
                 />
 

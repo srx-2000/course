@@ -1,28 +1,17 @@
 package com.srx.musicplayer.HttpUtil;
 
-import android.media.MediaPlayer;
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
 import com.google.gson.Gson;
-import com.srx.musicplayer.jsonEntity.Data;
-import com.srx.musicplayer.jsonEntity.SongList;
-import com.srx.musicplayer.jsonEntity.SongList2;
+import com.srx.musicplayer.jsonEntity.*;
 import okhttp3.*;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.util.EntityUtils;
-import org.jetbrains.annotations.NotNull;
-import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HTTPUtil {
 
-    public static String url1 = "https://api.imjad.cn/cloudmusic";
+    public static String url1 = "https://api.imjad.cn/cloudmusic/";
     public static String url2 = "https://musicapi.leanapp.cn";
     private static OkHttpClient client;
 
@@ -100,10 +89,31 @@ public class HTTPUtil {
 
     public static Response doGetMethod2(String path, String id) {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .get()
-                .url(url2+path+"?id="+id)
-                .build();
+        Request request;
+        HttpUrl.Builder builder;
+        if (path.equals("/song/detail")) {
+            request = new Request.Builder()
+                    .get()
+                    .url(url2 + path + "?ids=" + id)
+                    .build();
+        } else if (path.equals("/search")) {
+            request = new Request.Builder()
+                    .get()
+                    .url(url2 + path + "?keywords=" + id)
+                    .build();
+        } else {
+            if (id != null) {
+                request = new Request.Builder()
+                        .get()
+                        .url(url2 + path + "?id=" + id)
+                        .build();
+            } else {
+                request = new Request.Builder()
+                        .get()
+                        .url(url2 + path)
+                        .build();
+            }
+        }
         Call call = client.newCall(request);
         Response response = null;
         try {
@@ -133,9 +143,55 @@ public class HTTPUtil {
         }
         return songList;
     }
-//    public static List<String>
 
+    public static List<String> getHotList() {
+        List<String> hotList = new ArrayList<>();
+        String string = null;
+        try {
+            Response response = doGetMethod2("/search/hot", null);
+            string = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        HotList list = gson.fromJson(string, HotList.class);
+        List<HotList.ResultEntity.HotsEntity> hots = list.getResult().getHots();
+        for (HotList.ResultEntity.HotsEntity item : hots) {
+            hotList.add(item.getFirst());
+        }
+        return hotList;
+    }
 
+    public static Song getSingleSongDetail(String songId) {
+        String string = null;
+        try {
+            Response response = doGetMethod2("/song/detail", songId);
+            string = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        SongDetail songDetail = gson.fromJson(string, SongDetail.class);
+        SongDetail.SongsEntity songsEntity = songDetail.getSongs().get(0);
+        Song song = new Song(songsEntity.getId(), songsEntity.getName(), songsEntity.getAr().get(0).getName());
+        return song;
+    }
 
-
+    public static List<Song> searchSong(String searchString) {
+        String string = null;
+        try {
+            Response response = doGetMethod2("/search", searchString);
+            string = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson=new Gson();
+        SearchResult searchResult = gson.fromJson(string, SearchResult.class);
+        List<SearchResult.ResultEntity.SongsEntity> songs = searchResult.getResult().getSongs();
+        List<Song> songList=new  ArrayList<>();
+        for (SearchResult.ResultEntity.SongsEntity song :songs) {
+            songList.add(new Song(song.getId(),song.getName(),song.getArtists().get(0).getName()));
+        }
+        return songList;
+    }
 }

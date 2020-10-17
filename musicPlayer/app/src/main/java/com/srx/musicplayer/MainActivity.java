@@ -1,21 +1,18 @@
 package com.srx.musicplayer;
 
 import android.annotation.SuppressLint;
-import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.view.View;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import com.srx.musicplayer.Home.homePageFragment;
+import com.srx.musicplayer.Search.searchPageFragment;
 import com.srx.musicplayer.MusicList.musicListPageFragment;
 import com.srx.musicplayer.Player.playerPageFragment;
 
@@ -41,11 +38,12 @@ public class MainActivity extends AppCompatActivity {
     public void initViewPager() {
         pager = findViewById(R.id.viewPager);
         fragmentList = new ArrayList<>();
-        fragmentList.add(new homePageFragment());
+        fragmentList.add(new searchPageFragment());
         fragmentList.add(new playerPageFragment());
         fragmentList.add(new musicListPageFragment());
         FragmentPagerAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
+        pager.setOffscreenPageLimit(3);
     }
 
     @SuppressLint("ResourceAsColor")
