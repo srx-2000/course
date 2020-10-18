@@ -5,7 +5,9 @@
               android:layout_height="match_parent"
               tools:context=".Search.searchPageFragment"
               android:orientation="vertical"
-              android:padding="15dp">
+              android:padding="15dp"
+              android:id="@+id/totalLayout">
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,6 +20,8 @@
                 android:text="种太阳"
                 android:id="@+id/search_editText"
                 android:hint="请输入要查询的歌名"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 />
 
         <TextView
@@ -32,16 +36,32 @@
                 android:background="@drawable/button"/>
     </LinearLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/search_result_recyclerView"/>
+
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/hot_linearLayout">
+
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="热搜榜"
             android:fontFamily="sans-serif-black"
             android:textColor="@color/darkBlack"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/hot_recyclerView"/>
+    </LinearLayout>
 
 </LinearLayout>

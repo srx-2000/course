@@ -1,10 +1,67 @@
 package com.srx.musicplayer.HttpUtil;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.res.Resources;
+import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.view.View;
+import android.widget.ImageView;
+import androidx.annotation.RequiresApi;
+import com.srx.musicplayer.R;
 
 public class mapUtil {
-    public static Bitmap fastblur(Context context, Bitmap sentBitmap, int radius) {
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public static void setCircleImage(View view, int drawable, ImageView target, Bitmap input) {
+        if (input == null) {
+            Resources resources = view.getResources();
+            Drawable beginDrawable = resources.getDrawable(drawable);
+            Bitmap bitmap = ((BitmapDrawable) beginDrawable).getBitmap();
+            Bitmap resultBitMap = mapUtil.createCircleImage(bitmap);
+            Drawable endDrawable = new BitmapDrawable(resultBitMap);
+            target.setImageDrawable(endDrawable);
+        } else {
+            Bitmap resultBitMap = mapUtil.createCircleImage(input);
+            Drawable endDrawable = new BitmapDrawable(resultBitMap);
+            target.setImageDrawable(endDrawable);
+        }
+    }
+
+    public static Bitmap createCircleImage(Bitmap source) {
+        int width = source.getWidth();
+        int height = source.getHeight();
+        float raduis = 1000 * 0.5f;
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        //paint.setColor(Color.RED);
+        //画布设置遮罩效果
+        paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+        //处理图像数据
+        Bitmap bitmap = Bitmap.createBitmap(width, height, source.getConfig());
+        Canvas canvas = new Canvas(bitmap);
+        //bitmap的显示由画笔paint来决定
+        canvas.drawCircle(width * 0.5f, height * 0.5f, raduis, paint);
+        return bitmap;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public static void setBlurryBackground(View view, int drawable, int degree, View target, Bitmap input) {
+        if (input == null) {
+            Resources resources = view.getResources();
+            Drawable beginDrawable = resources.getDrawable(drawable);
+            Bitmap bitmap = ((BitmapDrawable) beginDrawable).getBitmap();
+            Bitmap resultBitMap = mapUtil.fastblur(bitmap, degree);
+            Drawable endDrawable = new BitmapDrawable(resultBitMap);
+            target.setBackground(endDrawable);
+        }else{
+            Bitmap resultBitMap = mapUtil.fastblur(input, degree);
+            Drawable endDrawable = new BitmapDrawable(resultBitMap);
+            target.setBackground(endDrawable);
+        }
+    }
+
+    public static Bitmap fastblur(Bitmap sentBitmap, int radius) {
 
         Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
 

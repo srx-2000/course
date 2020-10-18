@@ -1,6 +1,7 @@
 package com.srx.musicplayer.Player;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -15,6 +17,9 @@ import android.net.sip.SipSession;
 import android.os.*;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -32,12 +37,19 @@ import com.srx.musicplayer.HttpUtil.HTTPUtil;
 import com.srx.musicplayer.HttpUtil.mapUtil;
 import com.srx.musicplayer.R;
 import com.srx.musicplayer.Service.MediaPlayerService;
+import com.srx.musicplayer.jsonEntity.Song;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Time;
 import java.util.*;
 
@@ -67,7 +79,14 @@ public class playerPageFragment extends Fragment {
     private Timer globalTimer = new Timer();
     private int playing_method = 0;//用于设定播放方式：0为初始值，1为循环播放，2为随机播放。
     private boolean getSongListFlag = false;
-    private String TAG="com.srx.musicPlayer";
+    private String TAG = "com.srx.musicPlayer";
+    private View viewById;
+    private ImageView songImage;
+    private Animation operatingAnim;
+    private TextView title;
+    private String songName;
+    private String songPicUrl;
+    private int degree=300;
 
 
     public playerPageFragment() {
@@ -82,12 +101,17 @@ public class playerPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_player_page, container, false);
         initComponent(view);
         bindService();
-        setBlurryBackground(view,R.drawable.beauty,30);
+        mapUtil.setBlurryBackground(view, R.drawable.beauty, degree, viewById, null);
+        mapUtil.setCircleImage(view, R.drawable.beauty, songImage, null);
         play_status.setOnClickListener(listener);
         next.setOnClickListener(listener);
         previous.setOnClickListener(listener);
         loop.setOnClickListener(listener);
         loopPlaying();
+        //初始化动画
+        operatingAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.image_anim);
+        LinearInterpolator lin = new LinearInterpolator();
+        operatingAnim.setInterpolator(lin);
 
         return view;
     }
@@ -100,7 +124,6 @@ public class playerPageFragment extends Fragment {
                 case R.id.play_status:
                     if (player == null) {
                         Toast.makeText(getActivity(), "正在加载...请稍后", Toast.LENGTH_SHORT).show();
-//                        initCurrentList();
                     } else {
                         //如果获取歌单的timerTask完成了，那么flag就会变成true，那么我们在这里就结束他
                         if (!playStatus) {
@@ -113,10 +136,16 @@ public class playerPageFragment extends Fragment {
                             }).start();
                             play_status.setImageResource(R.drawable.pause);
                             playStatus = true;
+                            //开启动画
+                            if (operatingAnim != null) {
+                                songImage.startAnimation(operatingAnim);
+                            }
                         } else {
                             binder.play();
                             play_status.setImageResource(R.drawable.start);
                             playStatus = false;
+                            //停止动画
+                            songImage.clearAnimation();
                         }
                     }
                     break;
@@ -126,7 +155,6 @@ public class playerPageFragment extends Fragment {
                     } else {
                         if (currentList.size() == 0) {
                             Toast.makeText(getActivity(), "获取歌单中...请稍后", Toast.LENGTH_SHORT).show();
-//                            initCurrentList();
                         } else {
                             if ((currentList.size() - 1) != songCount) {
                                 nextSong(currentList.get(songCount));
@@ -143,7 +171,6 @@ public class playerPageFragment extends Fragment {
                     } else {
                         if (currentList.size() == 0) {
                             Toast.makeText(getActivity(), "获取歌单中...请稍后", Toast.LENGTH_SHORT).show();
-//                            initCurrentList();
                         } else {
                             if (songCount > 0) {
                                 nextSong(currentList.get(songCount));
@@ -183,6 +210,9 @@ public class playerPageFragment extends Fragment {
         next = view.findViewById(R.id.next);
         previous = view.findViewById(R.id.previous);
         loop = view.findViewById(R.id.loop);
+        viewById = view.findViewById(R.id.totalLayout);
+        songImage = view.findViewById(R.id.song_image);
+        title = view.findViewById(R.id.title);
     }
 
     public void initCurrentList() {
@@ -195,7 +225,7 @@ public class playerPageFragment extends Fragment {
                     for (String s : songList) {
                         currentList.add(s);
                     }
-                if (currentList.size() != 0)
+                if (currentList.size() != 0) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -205,24 +235,11 @@ public class playerPageFragment extends Fragment {
                             handler.sendMessage(message);
                         }
                     }).start();
+
+                }
             }
         };
         songListTimer.schedule(task, 0, 300);
-    }
-
-    /**
-     * 增删歌单
-     */
-    public void addSongForList(String songId) {
-        currentList.add(songId);
-    }
-
-    public void clearSongForList() {
-        currentList.clear();
-    }
-
-    public void removeSingleSong(int songIndex) {
-        currentList.remove(songIndex);
     }
 
     /**
@@ -230,17 +247,6 @@ public class playerPageFragment extends Fragment {
      */
     public void comment() {
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    public void setBlurryBackground(View view,int drawable,int degree){
-        Resources resources = getResources();
-        Drawable beginDrawable = resources.getDrawable(drawable);
-        Bitmap bitmap=((BitmapDrawable)beginDrawable).getBitmap();
-        Bitmap resultBitMap = mapUtil.fastblur(getActivity(), bitmap, degree);
-        View viewById = view.findViewById(R.id.totalLayout);
-        Drawable endDrawable = new BitmapDrawable(resultBitMap);
-        viewById.setBackground(endDrawable);
     }
 
 
@@ -251,6 +257,45 @@ public class playerPageFragment extends Fragment {
 
     }
 
+    /**
+     * 增、删、选择歌单
+     *
+     * @param SongId
+     */
+    @Subscribe
+    public void onEvent(String SongId) {
+        String[] split = SongId.split(":");
+        int index = currentList.indexOf(split[1]);
+        if (currentList.size() != 0) {
+            switch (split[0]) {
+                case "delete":
+                    currentList.remove(index);
+                    break;
+                case "select":
+                    songCount = index;
+                    nextSong(split[1]);
+                    break;
+                case "add":
+                    currentList.add(split[1]);
+                    Log.d(TAG, "onEvent: " + split[1]);
+                    break;
+            }
+        }
+    }
+
+
+    public void getSongDetail() {
+        if (currentList.size() != 0)
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Message message = new Message();
+                    message.what = 4;
+                    message.obj = HTTPUtil.getSingleSongDetail(currentList.get(songCount));
+                    handler.sendMessage(message);
+                }
+            }).start();
+    }
 
     public void nextSong(final String songId) {
         new Thread(new Runnable() {
@@ -260,6 +305,7 @@ public class playerPageFragment extends Fragment {
                 Message message = binder.nextOrPreviousSong(songId);
                 handler.sendMessage(message);
                 binder.play();
+                getSongDetail();
                 play_status.setImageResource(R.drawable.pause);
                 playStatus = true;
             }
@@ -307,7 +353,7 @@ public class playerPageFragment extends Fragment {
                 if (getSongListFlag) {
                     songListTimer.cancel();
                     EventBus.getDefault().post(currentList);
-                    Log.d(TAG, "run: " + currentList.toString());
+//                    Log.d(TAG, "run: " + currentList.toString());
                 }
             }
         };
@@ -319,6 +365,7 @@ public class playerPageFragment extends Fragment {
         super.onCreate(savedInstanceState);
         initCurrentList();
         initGlobalTimer();
+        EventBus.getDefault().register(this);
     }
 
 
@@ -343,6 +390,7 @@ public class playerPageFragment extends Fragment {
                         @Override
                         public void onCompletion(MediaPlayer mp) {
                             nextSong(currentList.get(songCount));
+
                             songCount++;
                             if (songCount >= currentList.size()) {
                                 songCount -= currentList.size();
@@ -357,6 +405,36 @@ public class playerPageFragment extends Fragment {
         loop.setImageResource(R.drawable.cycle);
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public void downLoadPic() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (songPicUrl != null) {
+                    URL url;
+                    try {
+                        url = new URL(songPicUrl);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoInput(true);
+                        conn.connect();
+                        InputStream in = conn.getInputStream();
+                        final Bitmap map = BitmapFactory.decodeStream(in);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mapUtil.setBlurryBackground(getView(), R.drawable.beauty, degree, viewById, map);
+                                mapUtil.setCircleImage(getView(), R.drawable.beauty, songImage, map);
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+
+    }
 
     /**
      * 问题在于没跑进去，也就是这个线程在初始化的时候根本没跑
@@ -400,32 +478,45 @@ public class playerPageFragment extends Fragment {
         }
     }
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 1) {
-                player = (MediaPlayer) msg.obj;
-                int time = player.getDuration();
-                if (time > 0) {
-                    int s = time / 1000;
-                    String total = s / 60 + ":" + s % 60;
-                    endTime.setText(total);
-                } else {
-                    endTime.setText("00:00");
-                }
-            } else if (msg.what == 2) {
-                songList = (List<String>) msg.obj;
-            } else if (msg.what == 3) {
-                player = (MediaPlayer) msg.obj;
-                int time = player.getDuration();
-                if (time > 0) {
-                    int s = time / 1000;
-                    String total = s / 60 + ":" + s % 60;
-                    endTime.setText(total);
-                } else {
-                    endTime.setText("00:00");
-                }
+            switch (msg.what) {
+                case 1:
+                    player = (MediaPlayer) msg.obj;
+                    int time = player.getDuration();
+                    if (time > 0) {
+                        int s = time / 1000;
+                        String total = s / 60 + ":" + s % 60;
+                        endTime.setText(total);
+                    } else {
+                        endTime.setText("00:00");
+                    }
+                    break;
+                case 2:
+                    songList = (List<String>) msg.obj;
+                    break;
+                case 3:
+                    player = (MediaPlayer) msg.obj;
+                    int time1 = player.getDuration();
+                    if (time1 > 0) {
+                        int s = time1 / 1000;
+                        String total = s / 60 + ":" + s % 60;
+                        endTime.setText(total);
+                    } else {
+                        endTime.setText("00:00");
+                    }
+                    break;
+                case 4:
+                    Song songDetail = (Song) msg.obj;
+                    songPicUrl = songDetail.getSongPicUrl();
+                    songName = songDetail.getSongName();
+                    title.setText(songName);
+                    downLoadPic();
+                    break;
             }
         }
     };

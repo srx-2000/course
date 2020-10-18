@@ -1,5 +1,6 @@
 package com.srx.musicplayer.HttpUtil;
 
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import com.google.gson.Gson;
 import com.srx.musicplayer.jsonEntity.*;
@@ -54,6 +55,7 @@ public class HTTPUtil {
     }
 
     public static String getSingleSongMp3(String songId) {
+        Log.d("TAG", "getSingleSongMp3:"+songId);
         String string = null;
         try {
             Response response = doGetMethod1("song", songId);
@@ -173,7 +175,7 @@ public class HTTPUtil {
         Gson gson = new Gson();
         SongDetail songDetail = gson.fromJson(string, SongDetail.class);
         SongDetail.SongsEntity songsEntity = songDetail.getSongs().get(0);
-        Song song = new Song(songsEntity.getId(), songsEntity.getName(), songsEntity.getAr().get(0).getName());
+        Song song = new Song(songsEntity.getId(), songsEntity.getName(), songsEntity.getAr().get(0).getName()+"-"+songsEntity.getAl().getName(),songsEntity.getAl().getPicUrl());
         return song;
     }
 
@@ -190,8 +192,11 @@ public class HTTPUtil {
         List<SearchResult.ResultEntity.SongsEntity> songs = searchResult.getResult().getSongs();
         List<Song> songList=new  ArrayList<>();
         for (SearchResult.ResultEntity.SongsEntity song :songs) {
-            songList.add(new Song(song.getId(),song.getName(),song.getArtists().get(0).getName()));
+            songList.add(new Song(song.getId(),song.getName(),song.getArtists().get(0).getName()+"-"+song.getAlbum().getName()));
         }
         return songList;
     }
+
+//    public static
+
 }

@@ -7,6 +7,14 @@ public class Song implements Serializable {
     private long songId;
     private String songName;
     private String singer;
+    private String songPicUrl;
+
+    public Song(long songId, String songName, String singer, String songPicUrl) {
+        this.songId = songId;
+        this.songName = songName;
+        this.singer = singer;
+        this.songPicUrl = songPicUrl;
+    }
 
     public Song(int id, long songId, String songName, String singer) {
         this.id = id;
@@ -22,6 +30,15 @@ public class Song implements Serializable {
         this.songId = songId;
         this.songName = songName;
         this.singer = singer;
+    }
+
+
+    public String getSongPicUrl() {
+        return songPicUrl;
+    }
+
+    public void setSongPicUrl(String songPicUrl) {
+        this.songPicUrl = songPicUrl;
     }
 
     public int getId() {

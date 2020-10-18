@@ -12,7 +12,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1"
-                android:textSize="30dp"
+                android:textSize="20dp"
                 android:layout_centerVertical="true"
                 android:id="@+id/index"/>
         <LinearLayout
@@ -25,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:text="标题"
                 android:textSize="20dp"
+                android:textColor="@color/darkBlack"
                 android:layout_marginLeft="40dp"
                 android:id="@+id/title"
                 android:layout_above="@id/singer"/>
@@ -44,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/delete"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:id="@+id/deleteSingleSong"/>
 
 
     </RelativeLayout>

@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.*;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,6 +94,7 @@ public class MediaPlayerService extends Service {
         public void randomPlaying() {
 
         }
+
 
         public void setSeekBar(SeekBar seekBar) {
             MediaPlayerService.this.seekBar = seekBar;

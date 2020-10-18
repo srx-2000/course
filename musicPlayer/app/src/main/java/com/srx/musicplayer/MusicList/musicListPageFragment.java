@@ -1,15 +1,20 @@
 package com.srx.musicplayer.MusicList;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.srx.musicplayer.HttpUtil.HTTPUtil;
+import com.srx.musicplayer.HttpUtil.mapUtil;
 import com.srx.musicplayer.Player.playerPageFragment;
 import com.srx.musicplayer.R;
 import com.srx.musicplayer.jsonEntity.Song;
@@ -36,24 +42,23 @@ import java.util.TimerTask;
  */
 public class musicListPageFragment extends Fragment {
 
-    private Timer timer = new Timer();
     private List<Song> list = new ArrayList<>();
     private boolean listFlag = false;
-    private TimerTask task;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private String TAG = "com.srx.musicPlayer";
-    private playerPageFragment playerPageFragment=new playerPageFragment();
+    private View viewById;//总linearLayout
 
 
     public musicListPageFragment() {
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_music_list_page, container, false);
         initComponent(view);
+        mapUtil.setBlurryBackground(view, R.drawable.beauty, 15, viewById,null);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -74,11 +79,9 @@ public class musicListPageFragment extends Fragment {
     public void initComponent(View view) {
         swipeRefreshLayout = view.findViewById(R.id.refresh);
         recyclerView = view.findViewById(R.id.song_list_recyclerView);
+        viewById = view.findViewById(R.id.refresh);
     }
-    
-//    public void addSong(String songId){
-//        playerPageFragment.addSongForList(songId);
-//    }
+
 
     /**
      * 用于获取另外的fragment中传入的currentList
@@ -104,7 +107,6 @@ public class musicListPageFragment extends Fragment {
                         listFlag = true;
                     } else {
                         list.add(singleSongDetail);
-//                        Log.d(TAG, "run: " + list.toString());
                     }
                 }
             }).start();
@@ -118,9 +120,29 @@ public class musicListPageFragment extends Fragment {
                 recyclerView.setVisibility(View.GONE);
                 Toast.makeText(getActivity(), "歌单暂时为空....请添加歌单或刷新", Toast.LENGTH_SHORT).show();
             } else {
-//                Log.d(TAG, "initRecyclerView: "+list.get(0).getSongId());
                 LinearLayoutManager manager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-                songListAdapter adapter = new songListAdapter(list);
+                final songListAdapter adapter = new songListAdapter(list);
+                adapter.setListener(new songListAdapter.OnItemClickListener() {
+                    @Override
+                    public void OnItemClickForDelete(View view, final long songId, final int position) {
+                        new AlertDialog.Builder(getActivity())
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        EventBus.getDefault().post("delete:" + songId);
+                                        adapter.notifyItemRemoved(position);
+                                    }
+                                }).setNegativeButton("取消", null)
+                                .setMessage("确定要将这首歌从歌单中删除吗？").show();
+                    }
+
+                    @Override
+                    public void OnItemClickForSelect(final View view, final long songId) {
+//                        Log.d(TAG, "OnItemClickForDelete: " + songId);
+                        EventBus.getDefault().post("select:" + songId);
+//                        view.setBackgroundColor(R.color.darkBlack);
+                    }
+                });
                 recyclerView.setLayoutManager(manager);
                 recyclerView.setAdapter(adapter);
             }
