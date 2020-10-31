@@ -1,19 +1,20 @@
-package com.srx.calculator;
+package com.srx.calculator.Calculator;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.view.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import com.srx.calculator.Conversion.LengthActivity;
+import com.srx.calculator.R;
+import com.srx.calculator.Conversion.SystemActivity;
+import com.srx.calculator.Conversion.volumeActivity;
 
 import java.util.List;
 
-public class CalculatorFragment extends AppCompatActivity {
+public class CalculatorActivity extends AppCompatActivity {
     private List<Calculator> list;
     private InitComponent init;
 
@@ -172,15 +173,15 @@ public class CalculatorFragment extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.length:
-                Intent intent1 = new Intent(CalculatorFragment.this, LengthActivity.class);
+                Intent intent1 = new Intent(CalculatorActivity.this, LengthActivity.class);
                 startActivity(intent1);
                 break;
             case R.id.System:
-                Intent intent2 = new Intent(CalculatorFragment.this, SystemActivity.class);
+                Intent intent2 = new Intent(CalculatorActivity.this, SystemActivity.class);
                 startActivity(intent2);
                 break;
             case R.id.volume:
-                Intent intent3 = new Intent(CalculatorFragment.this, volumeActivity.class);
+                Intent intent3 = new Intent(CalculatorActivity.this, volumeActivity.class);
                 startActivity(intent3);
                 break;
             case R.id.help:

@@ -9,15 +9,13 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".volumeActivity">
+        <activity android:name=".Conversion.volumeActivity">
         </activity>
-        <activity android:name=".SystemActivity">
+        <activity android:name=".Conversion.SystemActivity">
         </activity>
-        <activity android:name=".LengthActivity">
+        <activity android:name=".Conversion.LengthActivity">
         </activity>
-        <activity android:name=".MainActivity">
-        </activity>
-        <activity android:name=".CalculatorFragment">
+        <activity android:name=".Calculator.CalculatorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

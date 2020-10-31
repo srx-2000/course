@@ -6,11 +6,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/total_view"
-        tools:context=".CalculatorFragment">
+        tools:context=".Calculator.CalculatorActivity">
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="200dp"
             android:id="@+id/recycler_view"/>
 
     <LinearLayout

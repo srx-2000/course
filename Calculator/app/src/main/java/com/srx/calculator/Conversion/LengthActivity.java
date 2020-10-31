@@ -1,10 +1,11 @@
-package com.srx.calculator;
+package com.srx.calculator.Conversion;
 
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import com.srx.calculator.R;
 
 public class LengthActivity extends AppCompatActivity {
 

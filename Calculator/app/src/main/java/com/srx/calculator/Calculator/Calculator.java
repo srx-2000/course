@@ -1,4 +1,4 @@
-package com.srx.calculator;
+package com.srx.calculator.Calculator;
 
 /**
  * @author srx

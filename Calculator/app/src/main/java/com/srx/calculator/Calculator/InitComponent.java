@@ -1,19 +1,13 @@
-package com.srx.calculator;
+package com.srx.calculator.Calculator;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.srx.calculator.R;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

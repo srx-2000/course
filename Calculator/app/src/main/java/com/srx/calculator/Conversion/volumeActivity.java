@@ -1,4 +1,4 @@
-package com.srx.calculator;
+package com.srx.calculator.Conversion;
 
 import android.text.Editable;
 import android.text.method.DigitsKeyListener;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import com.srx.calculator.R;
 
 public class volumeActivity extends AppCompatActivity {
 
