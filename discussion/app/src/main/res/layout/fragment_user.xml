@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".fragmentPager.User.userFragment">
+
+    <include layout="@layout/user_title"/>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/shallowGray"/>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:padding="20dp"
+            >
+
+        <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/avatar"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/avatar"
+                android:layout_centerHorizontal="true"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_nickName"
+                android:fontFamily="sans-serif-black"
+                android:textColor="@color/darkBlack"
+                android:textSize="10dp"
+                android:layout_alignLeft="@id/avatar"
+                android:layout_marginLeft="65dp"
+                android:text="测试用户1"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我是一个很帅的人"
+                android:fontFamily="sans-serif"
+                android:layout_marginLeft="65dp"
+                android:layout_alignLeft="@id/avatar"
+                android:layout_alignTop="@id/user_nickName"
+                android:layout_marginTop="20dp"
+                />
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow"
+                android:layout_marginLeft="280dp"
+                android:layout_alignLeft="@id/user_nickName"
+                android:layout_centerInParent="true"
+
+                />
+    </RelativeLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/shallowGray"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            >
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0\n收藏帖吧"
+                android:gravity="center"
+                android:clickable="true"
+                android:id="@+id/star_posts"
+
+                />
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0\n收藏贴子"
+                android:gravity="center"
+                android:clickable="true"
+                android:id="@+id/star_post"
+
+                />
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0\n粉丝"
+                android:gravity="center"
+                android:clickable="true"
+                android:id="@+id/follower"
+
+                />
+
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0\n关注"
+                android:gravity="center"
+                android:clickable="true"
+                android:id="@+id/following"
+                />
+    </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/shallowGray"/>
+
+    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                >
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="动态"
+                    android:textSize="13dp"
+                    android:textColor="@color/littleGrey"
+                    android:fontFamily="sans-serif-black"
+                    android:gravity="center"
+                    android:id="@+id/pyq"
+                    android:layout_alignParentTop="true"
+                    />
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:id="@+id/user_pager_recyclerView"
+                    android:layout_marginTop="20dp"
+                    >
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="退出登录"
+                    android:padding="20dp"
+                    android:textColor="#e74c3c"
+                    android:layout_gravity="center"
+                    android:background="@drawable/exit_button_effect"
+                    android:layout_alignParentBottom="true"
+                    android:id="@+id/exitButton"
+                    android:layout_marginTop="20dp"
+                    />
+        </RelativeLayout>
+    </ScrollView>
+
+
+</LinearLayout>
