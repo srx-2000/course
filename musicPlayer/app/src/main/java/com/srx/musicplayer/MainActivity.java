@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         pager.setOffscreenPageLimit(3);
     }
 
+
     @SuppressLint("ResourceAsColor")
     public void initFootBar() {
         LinearLayout layout = findViewById(R.id.main_activity_linearLayout);

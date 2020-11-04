@@ -73,7 +73,7 @@ public class playerPageFragment extends Fragment {
     private int songCount = 0;
     private List<String> songList = new ArrayList<>();
     private List<String> currentList = new ArrayList<>();
-    private String songListId = "5262477176";
+    private String songListId = "3137532773";
     private Timer timer;
     private final Timer songListTimer = new Timer();
     private Timer globalTimer = new Timer();
@@ -86,7 +86,7 @@ public class playerPageFragment extends Fragment {
     private TextView title;
     private String songName;
     private String songPicUrl;
-    private int degree=300;
+    private int degree=100;
 
 
     public playerPageFragment() {
