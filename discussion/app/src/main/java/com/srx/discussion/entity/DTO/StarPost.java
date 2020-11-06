@@ -2,7 +2,7 @@ package com.srx.discussion.entity.DTO;
 
 import java.util.List;
 
-public class StartPost {
+public class StarPost {
 
 
     /**

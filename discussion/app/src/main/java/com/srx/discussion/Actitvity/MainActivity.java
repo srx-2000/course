@@ -1,4 +1,4 @@
-package com.srx.discussion;
+package com.srx.discussion.Actitvity;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import com.srx.discussion.R;
 import com.srx.discussion.entity.base.AndroidPost;
 import com.srx.discussion.fragmentPager.Home.homeFragment;
 import com.srx.discussion.fragmentPager.Search.searchFragment;
@@ -31,32 +32,25 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager pager;
     private List<Fragment> fragmentList;
     private List<ImageView> imageViewList = new ArrayList<>();
+    private com.srx.discussion.fragmentPager.User.userFragment userFragment;
+    private com.srx.discussion.fragmentPager.message.messageFragment messageFragment;
+    private com.srx.discussion.fragmentPager.Search.searchFragment searchFragment;
+    private com.srx.discussion.fragmentPager.Home.homeFragment homeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-//                System.out.println(login);
-//                List<AndroidPost> showUserInfo = (List<AndroidPost>) HttpUtil.showHomePostList(1, 2);
-//                for (AndroidPost a : showUserInfo) {
-//                    Log.d("TAG", "onCreate: " + a.toString());
-//                    System.out.println(a.toString());
-//                }
-                HttpUtil.login("srx1","srx1");
-                String result = HttpUtil.updateUserInfo(10, "備er", null, null, null, null);
-//                String register = HttpUtil.register("user1", "user1", "user12@qq.com", "1");
-//                String result = HttpUtil.starPost(1);
-                System.out.println(result);
-                Log.d("TAG", "run: "+result);
-
-            }
-        }).start();
         initViewPager();
         initFootBar();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        pager.setCurrentItem(0);
     }
 
     @SuppressLint("ResourceAsColor")
@@ -97,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 pager.setCurrentItem(position);
+                if (position == 3)
+                    userFragment.setUserInfo();
                 setImageFont(position);
             }
 
@@ -110,10 +106,14 @@ public class MainActivity extends AppCompatActivity {
     public void initViewPager() {
         pager = findViewById(R.id.viewPager);
         fragmentList = new ArrayList<>();
-        fragmentList.add(new homeFragment());
-        fragmentList.add(new searchFragment());
-        fragmentList.add(new messageFragment());
-        fragmentList.add(new userFragment());
+        homeFragment = new homeFragment();
+        searchFragment = new searchFragment();
+        messageFragment = new messageFragment();
+        userFragment = new userFragment();
+        fragmentList.add(homeFragment);
+        fragmentList.add(searchFragment);
+        fragmentList.add(messageFragment);
+        fragmentList.add(userFragment);
         FragmentPagerAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(4);

@@ -8,4 +8,7 @@
     <color name="darkBlack">#130f40</color>
     <color name="grey">#f1f2f6</color>
     <color name="littleGrey">#747d8c</color>
+    <color name="closeWhite">#f1f2f6</color>
+    <color name="base">#FAFAFA</color>
+
 </resources>

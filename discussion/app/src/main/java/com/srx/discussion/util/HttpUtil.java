@@ -1,5 +1,6 @@
 package com.srx.discussion.util;
 
+import android.util.Log;
 import com.google.gson.Gson;
 import com.srx.discussion.entity.DTO.*;
 import com.srx.discussion.entity.base.*;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 
 public class HttpUtil {
 
@@ -84,12 +84,12 @@ public class HttpUtil {
                     .get()
                     .url(url + methodName + "?userId=" + params[0])
                     .build();
-        } else if (methodName.equals(MethodNameProvider.showUserStartPost)) {
+        } else if (methodName.equals(MethodNameProvider.showUserStarPost)) {
             request = new Request.Builder()
                     .get()
                     .url(url + methodName + "?userId=" + params[0])
                     .build();
-        } else if (methodName.equals(MethodNameProvider.showUserStartPosts)) {
+        } else if (methodName.equals(MethodNameProvider.showUserStarPosts)) {
             request = new Request.Builder()
                     .get()
                     .url(url + methodName + "?userId=" + params[0])
@@ -97,7 +97,7 @@ public class HttpUtil {
         } else if (methodName.equals(MethodNameProvider.showPostDetail)) {
             request = new Request.Builder()
                     .get()
-                    .url(url + methodName + "?postId=" + params[0] + "&pageSize=" + params[1] + "&currentPage=" + params[2])
+                    .url(url + methodName + "?postId=" + params[0] + "&pageSize=" + params[2] + "&currentPage=" + params[1])
                     .build();
         } else if (methodName.equals(MethodNameProvider.starPost)) {
             request = new Request.Builder()
@@ -198,25 +198,25 @@ public class HttpUtil {
                     .get()
                     .url(url + methodName)
                     .build();
-        }else if (methodName.equals(MethodNameProvider.insertPosts)) {
+        } else if (methodName.equals(MethodNameProvider.insertPosts)) {
             request = new Request.Builder()
                     .get()
-                    .url(url + methodName+"?postsMan="+params[0]+"&postsTitle="+params[1])
+                    .url(url + methodName + "?postsMan=" + params[0] + "&postsTitle=" + params[1])
                     .build();
-        }else if (methodName.equals(MethodNameProvider.getRoleList)) {
+        } else if (methodName.equals(MethodNameProvider.getRoleList)) {
             request = new Request.Builder()
                     .get()
-                    .url(url + methodName+"?postsId="+params[0])
+                    .url(url + methodName + "?postsId=" + params[0])
                     .build();
-        }else if (methodName.equals(MethodNameProvider.upUserRole)) {
+        } else if (methodName.equals(MethodNameProvider.upUserRole)) {
             request = new Request.Builder()
                     .get()
-                    .url(url + methodName+"?postsId="+params[0]+"&upUserId="+params[1])
+                    .url(url + methodName + "?postsId=" + params[0] + "&upUserId=" + params[1])
                     .build();
-        }else if (methodName.equals(MethodNameProvider.downUserRole)) {
+        } else if (methodName.equals(MethodNameProvider.downUserRole)) {
             request = new Request.Builder()
                     .get()
-                    .url(url + methodName+"?postsId="+params[0]+"&downUserId="+params[1])
+                    .url(url + methodName + "?postsId=" + params[0] + "&downUserId=" + params[1])
                     .build();
         }
         Call call = client.newCall(request);
@@ -353,14 +353,27 @@ public class HttpUtil {
      * @param username
      * @param password
      */
-    public static void login(String username, String password) {
+    public static Integer login(String username, String password) {
         if (username != null && password != null) {
             Response response = doPostMethod(MethodNameProvider.login_post, username, password);
-            String header = response.header("Set-Cookie");
-            String sessionId = header.substring(11, 43);
-            JSESSIONID = sessionId;
+            String string = null;
+            try {
+                string = response.body().string();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Integer integer = Integer.valueOf(string);
+            if (integer>0) {
+                String header = response.header("Set-Cookie");
+                String sessionId = header.substring(11, 43);
+                JSESSIONID = sessionId;
+                return integer;
+            } else {
+                return integer;
+            }
         } else {
             JSESSIONID = "";
+            return 0;
         }
     }
 
@@ -381,6 +394,7 @@ public class HttpUtil {
             e.printStackTrace();
         }
         Gson gson = new Gson();
+        Log.d("TAG", "showHomePostList: " + jsonString);
         if (jsonString.contains("errorMessage.")) {
             ErrorMessage errorMessage = parseErrorMessage(jsonString);
             return errorMessage;
@@ -389,7 +403,7 @@ public class HttpUtil {
             List<HomePost.PaginationQueryAllPostListEntity> homePostList = homePost.getPaginationQueryAllPostList();
             List<AndroidPost> postList = new ArrayList<>();
             for (HomePost.PaginationQueryAllPostListEntity p : homePostList) {
-                AndroidPost androidPost = new AndroidPost(p.getCommentCount(), p.getPostsId(), p.getPostMan(), p.getPostContext(), p.getPostTitle(), p.getCreateTime(), p.getPostManNickname(), p.getBelongPostsName());
+                AndroidPost androidPost = new AndroidPost(p.getCommentCount(), p.getPostsId(), p.getPostMan(), p.getPostId(), p.getPostContext(), p.getPostTitle(), p.getCreateTime(), p.getPostManNickname(), p.getBelongPostsName());
                 postList.add(androidPost);
             }
             return postList;
@@ -445,9 +459,9 @@ public class HttpUtil {
         return pyqList;
     }
 
-    public static List<AndroidUserToPost> showUserStartPost(Integer userId) {
-        List<AndroidUserToPost> startPostList = new ArrayList<>();
-        Response response = doGetMethod(MethodNameProvider.showUserStartPost, userId);
+    public static List<AndroidUserToPost> showUserStarPost(Integer userId) {
+        List<AndroidUserToPost> starPostList = new ArrayList<>();
+        Response response = doGetMethod(MethodNameProvider.showUserStarPost, userId);
         String jsonString = null;
         try {
             jsonString = response.body().string();
@@ -455,17 +469,17 @@ public class HttpUtil {
             e.printStackTrace();
         }
         Gson gson = new Gson();
-        StartPost jsonResult = gson.fromJson(jsonString, StartPost.class);
-        List<StartPost.QueryUserStarPostForAndroidEntity> queryUserStarPostForAndroid = jsonResult.getQueryUserStarPostForAndroid();
-        for (StartPost.QueryUserStarPostForAndroidEntity o : queryUserStarPostForAndroid) {
-            startPostList.add(new AndroidUserToPost(o.getBelongPostsId(), o.getUserId(), o.getPostmanId(), o.getPostmanNickname(), o.getBelongPostsName(), o.getUserNickname(), o.getPostContext(), o.getPostCreatTime()));
+        StarPost jsonResult = gson.fromJson(jsonString, StarPost.class);
+        List<StarPost.QueryUserStarPostForAndroidEntity> queryUserStarPostForAndroid = jsonResult.getQueryUserStarPostForAndroid();
+        for (StarPost.QueryUserStarPostForAndroidEntity o : queryUserStarPostForAndroid) {
+            starPostList.add(new AndroidUserToPost(o.getBelongPostsId(), o.getUserId(), o.getPostmanId(), o.getPostmanNickname(), o.getBelongPostsName(), o.getUserNickname(), o.getPostContext(), o.getPostCreatTime()));
         }
-        return startPostList;
+        return starPostList;
     }
 
-    public static List<AndroidUserToPosts> showUserStartPosts(Integer userId) {
-        List<AndroidUserToPosts> startPostsList = new ArrayList<>();
-        Response response = doGetMethod(MethodNameProvider.showUserStartPosts, userId);
+    public static List<AndroidUserToPosts> showUserStarPosts(Integer userId) {
+        List<AndroidUserToPosts> starPostsList = new ArrayList<>();
+        Response response = doGetMethod(MethodNameProvider.showUserStarPosts, userId);
         String jsonString = null;
         try {
             jsonString = response.body().string();
@@ -473,12 +487,12 @@ public class HttpUtil {
             e.printStackTrace();
         }
         Gson gson = new Gson();
-        StartPosts jsonResult = gson.fromJson(jsonString, StartPosts.class);
-        List<StartPosts.QueryUserStarPostsForAndroidEntity> queryUserStarPostsForAndroid = jsonResult.getQueryUserStarPostsForAndroid();
-        for (StartPosts.QueryUserStarPostsForAndroidEntity o : queryUserStarPostsForAndroid) {
-            startPostsList.add(new AndroidUserToPosts(o.getPostsId(), o.getPostsName(), o.getUserId(), o.getUserNickname()));
+        StarPosts jsonResult = gson.fromJson(jsonString, StarPosts.class);
+        List<StarPosts.QueryUserStarPostsForAndroidEntity> queryUserStarPostsForAndroid = jsonResult.getQueryUserStarPostsForAndroid();
+        for (StarPosts.QueryUserStarPostsForAndroidEntity o : queryUserStarPostsForAndroid) {
+            starPostsList.add(new AndroidUserToPosts(o.getPostsId(), o.getPostsName(), o.getUserId(), o.getUserNickname()));
         }
-        return startPostsList;
+        return starPostsList;
     }
 
     /**
@@ -490,7 +504,7 @@ public class HttpUtil {
      * @return
      */
     public static AndroidPostDetail showPostDetail(Integer postId, Integer currentPage, Integer pageSize) {
-        Response response = doGetMethod(MethodNameProvider.showUserStartPosts, postId, currentPage, pageSize);
+        Response response = doGetMethod(MethodNameProvider.showPostDetail, postId, currentPage, pageSize);
         String jsonString = null;
         try {
             jsonString = response.body().string();
@@ -626,7 +640,7 @@ public class HttpUtil {
         if (jsonString.contains("true"))
             return "帖子收藏成功";
         else
-            return "帖子收藏失败";
+            return "你已经收藏过该帖子了";
     }
 
     public static String starPosts(Integer postsId) {
@@ -824,7 +838,7 @@ public class HttpUtil {
         return Integer.valueOf(count);
     }
 
-    public static String insertPosts(Integer postMan,String postsTitle) {
+    public static String insertPosts(Integer postMan, String postsTitle) {
         Response response = doGetMethod(MethodNameProvider.insertPosts, postMan, postsTitle);
         String jsonString = null;
         try {
@@ -838,7 +852,7 @@ public class HttpUtil {
             return "创建贴吧失败";
     }
 
-    public static List<AndroidUser> getRoleList(String postId){
+    public static List<AndroidUser> getRoleList(String postId) {
         List<AndroidUser> postsList = new ArrayList<>();
         Response response = doGetMethod(MethodNameProvider.getRoleList, postId);
         String jsonString = null;
@@ -851,12 +865,12 @@ public class HttpUtil {
         Role result = gson.fromJson(jsonString, Role.class);
         List<Role.QueryRoleListEntity> queryRoleList = result.getQueryRoleList();
         for (Role.QueryRoleListEntity b : queryRoleList) {
-            postsList.add(new AndroidUser(b.getUserId(),b.getAddress(),b.getSelfSignature(),b.getAge(),b.getNickname(),b.getSex()));
+            postsList.add(new AndroidUser(b.getUserId(), b.getAddress(), b.getSelfSignature(), b.getAge(), b.getNickname(), b.getSex()));
         }
         return postsList;
     }
 
-    public static String upUserRole(Integer postsId,Integer upUserId) {
+    public static String upUserRole(Integer postsId, Integer upUserId) {
         Response response = doGetMethod(MethodNameProvider.upUserRole, postsId, upUserId);
         String jsonString = null;
         try {
@@ -870,7 +884,7 @@ public class HttpUtil {
             return "升职加薪失败啦";
     }
 
-    public static String downUserRole(Integer postsId,Integer downUserId) {
+    public static String downUserRole(Integer postsId, Integer downUserId) {
         Response response = doGetMethod(MethodNameProvider.downUserRole, postsId, downUserId);
         String jsonString = null;
         try {
@@ -885,7 +899,7 @@ public class HttpUtil {
     }
 
     public static Boolean isLanded() {
-        return JSESSIONID.equals("") ? true : false;
+        return JSESSIONID.equals("") ? false : true;
     }
 
 }

@@ -4,6 +4,7 @@ public class AndroidPost {
     private int CommentCount;
     private int belongPosts;
     private int postMan;
+    private int postId;
     private String postContent;
     private String postTitle;
     private String createTime;
@@ -15,6 +16,18 @@ public class AndroidPost {
         CommentCount = commentCount;
         this.belongPosts = belongPosts;
         this.postMan = postMan;
+        this.postContent = postContent;
+        this.postTitle = postTitle;
+        this.createTime = createTime;
+        this.postManNickname = postManNickname;
+        this.belongPostsName = belongPostsName;
+    }
+
+    public AndroidPost(int commentCount, int belongPosts, int postMan, int postId, String postContent, String postTitle, String createTime, String postManNickname, String belongPostsName) {
+        CommentCount = commentCount;
+        this.belongPosts = belongPosts;
+        this.postMan = postMan;
+        this.postId = postId;
         this.postContent = postContent;
         this.postTitle = postTitle;
         this.createTime = createTime;
@@ -90,12 +103,21 @@ public class AndroidPost {
         this.createTime = createTime;
     }
 
+    public int getPostId() {
+        return postId;
+    }
+
+    public void setPostId(int postId) {
+        this.postId = postId;
+    }
+
     @Override
     public String toString() {
         return "AndroidPost{" +
                 "CommentCount=" + CommentCount +
                 ", belongPosts=" + belongPosts +
                 ", postMan=" + postMan +
+                ", postId=" + postId +
                 ", postContent='" + postContent + '\'' +
                 ", postTitle='" + postTitle + '\'' +
                 ", createTime='" + createTime + '\'' +

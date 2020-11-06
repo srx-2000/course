@@ -25,7 +25,7 @@
                 android:layout_height="50dp"
                 android:id="@+id/avatar"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/avatar"
+                android:src="@drawable/avatar1"
                 android:layout_centerHorizontal="true"/>
 
         <TextView
@@ -34,7 +34,7 @@
                 android:id="@+id/user_nickName"
                 android:fontFamily="sans-serif-black"
                 android:textColor="@color/darkBlack"
-                android:textSize="10dp"
+                android:textSize="12dp"
                 android:layout_alignLeft="@id/avatar"
                 android:layout_marginLeft="65dp"
                 android:text="测试用户1"/>
@@ -48,6 +48,7 @@
                 android:layout_alignLeft="@id/avatar"
                 android:layout_alignTop="@id/user_nickName"
                 android:layout_marginTop="20dp"
+                android:id="@+id/self_signature"
                 />
 
         <ImageView

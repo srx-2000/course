@@ -2,7 +2,7 @@ package com.srx.discussion.entity.DTO;
 
 import java.util.List;
 
-public class StartPosts {
+public class StarPosts {
 
     /**
      * queryUserStarPostsForAndroid : [{"postsId":"1","postsName":"测试吧1","userNickname":"帅逼1号","userId":1},{"postsId":"5","postsName":"测试吧5","userNickname":"帅逼1号","userId":1}]

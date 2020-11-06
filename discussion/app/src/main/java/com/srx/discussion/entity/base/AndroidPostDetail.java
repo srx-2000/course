@@ -1,11 +1,13 @@
 package com.srx.discussion.entity.base;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class AndroidPostDetail {
+public class AndroidPostDetail implements Serializable {
+
 
     /**
-     * commentList : [{"commentContext":"测试评论1","isLive":"1","createTime":"2020-10-20 12:13:14","commentId":1,"commentMan":1,"targetPost":1,"commentManUsername":"user1"},{"commentContext":"测试评论2","isLive":"1","createTime":"2020-10-20 12:13:14","commentId":2,"commentMan":2,"targetPost":1,"commentManUsername":"user2"},{"commentContext":"测试评论3","isLive":"1","createTime":"2020-10-20 12:13:14","commentId":3,"commentMan":3,"targetPost":1,"commentManUsername":"user3"}]
+     * commentList : [{"commentContext":"postman评论测试content1","replyCount":0,"isLive":"1","createTime":"2020-11-03 18:09:10","commentId":10,"commentMan":1,"targetPost":1,"commentManUsername":"用户02a29974-5830-4c6f-acc6-96904a9ff512"},{"commentContext":"postman评论测试content","replyCount":0,"isLive":"1","createTime":"2020-11-03 18:05:38","commentId":9,"commentMan":1,"targetPost":1,"commentManUsername":"用户02a29974-5830-4c6f-acc6-96904a9ff512"},{"commentContext":"测试评论1","replyCount":12,"isLive":"1","createTime":"2020-10-20 12:13:14","commentId":1,"commentMan":1,"targetPost":1,"commentManUsername":"用户02a29974-5830-4c6f-acc6-96904a9ff512"},{"commentContext":"测试评论2","replyCount":1,"isLive":"1","createTime":"2020-10-20 12:13:14","commentId":2,"commentMan":2,"targetPost":1,"commentManUsername":"帅逼2号"},{"commentContext":"测试评论3","replyCount":0,"isLive":"1","createTime":"2020-10-20 12:13:14","commentId":3,"commentMan":3,"targetPost":1,"commentManUsername":"帅逼3号"}]
      * postManNickname : 帅逼2号
      * postContext : 测试帖子内容1
      * belongPostsName : 测试吧1
@@ -13,6 +15,7 @@ public class AndroidPostDetail {
      * postManId : 2
      * postTitle : 测试帖子1
      * postId : 1
+     * postCreateTime : 2020-10-20 12:06:04
      */
     private List<CommentListEntity> commentList;
     private String postManNickname;
@@ -22,6 +25,7 @@ public class AndroidPostDetail {
     private int postManId;
     private String postTitle;
     private int postId;
+    private String postCreateTime;
 
     public void setCommentList(List<CommentListEntity> commentList) {
         this.commentList = commentList;
@@ -53,6 +57,10 @@ public class AndroidPostDetail {
 
     public void setPostId(int postId) {
         this.postId = postId;
+    }
+
+    public void setPostCreateTime(String postCreateTime) {
+        this.postCreateTime = postCreateTime;
     }
 
     public List<CommentListEntity> getCommentList() {
@@ -87,17 +95,23 @@ public class AndroidPostDetail {
         return postId;
     }
 
-    public class CommentListEntity {
+    public String getPostCreateTime() {
+        return postCreateTime;
+    }
+
+    public class CommentListEntity implements Serializable{
         /**
-         * commentContext : 测试评论1
+         * commentContext : postman评论测试content1
+         * replyCount : 0
          * isLive : 1
-         * createTime : 2020-10-20 12:13:14
-         * commentId : 1
+         * createTime : 2020-11-03 18:09:10
+         * commentId : 10
          * commentMan : 1
          * targetPost : 1
-         * commentManUsername : user1
+         * commentManUsername : 用户02a29974-5830-4c6f-acc6-96904a9ff512
          */
         private String commentContext;
+        private int replyCount;
         private String isLive;
         private String createTime;
         private int commentId;
@@ -107,6 +121,10 @@ public class AndroidPostDetail {
 
         public void setCommentContext(String commentContext) {
             this.commentContext = commentContext;
+        }
+
+        public void setReplyCount(int replyCount) {
+            this.replyCount = replyCount;
         }
 
         public void setIsLive(String isLive) {
@@ -135,6 +153,10 @@ public class AndroidPostDetail {
 
         public String getCommentContext() {
             return commentContext;
+        }
+
+        public int getReplyCount() {
+            return replyCount;
         }
 
         public String getIsLive() {

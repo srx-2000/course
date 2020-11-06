@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/closeWhite">
+
+
+    <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/avatar1"
+            android:id="@+id/common_avatar"
+            android:layout_alignParentLeft="true"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试用户1"
+            android:textSize="16dp"
+            android:layout_toRightOf="@id/common_avatar"
+            android:id="@+id/user_nickName"
+            android:textColor="@color/darkBlack"
+            android:layout_marginLeft="5dp"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试贴吧1"
+            android:textColor="@color/littleGrey"
+            android:textSize="12dp"
+            android:layout_alignParentRight="true"
+            android:id="@+id/posts_title"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="1天前"
+            android:textColor="@color/littleGrey"
+            android:id="@+id/post_time"
+            android:layout_below="@id/user_nickName"
+            android:layout_marginTop="5dp"
+            android:layout_alignLeft="@id/user_nickName"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_title"
+            android:text="测试标题1"
+            android:textColor="@color/darkBlack"
+            android:textSize="18dp"
+            android:layout_below="@id/common_avatar"
+            android:layout_marginTop="10dp"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_content"
+            android:text="测试内容1"
+            android:textColor="@color/littleGrey"
+            android:textSize="15dp"
+            android:layout_below="@id/post_title"
+            android:layout_marginTop="10dp"
+            android:singleLine="true"
+            android:width="360dp"
+            android:layout_centerHorizontal="true"
+            />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/post_content"
+            android:clickable="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:background="@color/closeWhite"
+            android:id="@+id/comment_layout"
+            >
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/comment"
+                android:backgroundTint="@color/closeWhite"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="10"
+                android:textSize="10dp"
+                android:textColor="@color/littleGrey"
+                android:gravity="center"
+                android:id="@+id/comment_count"
+                />
+    </LinearLayout>
+</RelativeLayout>

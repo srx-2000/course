@@ -10,8 +10,8 @@ public abstract class MethodNameProvider {
     public static String insertReplyForReply_post = "/IRReply";
     public static String insertPost_post = "/insertPost";
     public static String insertComment_post = "/insertComment";
-    public static String showUserStartPosts = "/showUserStartPosts";
-    public static String showUserStartPost = "/showUserStartPost";
+    public static String showUserStarPosts = "/showUserStarPosts";
+    public static String showUserStarPost = "/showUserStarPost";
     public static String showUserInfo = "/showUserInfo";
     public static String showUserNickName = "/showUserNickName";
     public static String showPyqList = "/showPyqList";
