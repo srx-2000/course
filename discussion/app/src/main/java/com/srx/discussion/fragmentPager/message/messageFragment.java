@@ -35,11 +35,11 @@ public class messageFragment extends Fragment {
 
 
     public void login(final String username, final String password) {
-        if (!HttpUtil.isLanded()) {
+        if (HttpUtil.isLanded()) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    HttpUtil.login(username,password);
+                    HttpUtil.showReplyList()
                 }
             }).start();
         }

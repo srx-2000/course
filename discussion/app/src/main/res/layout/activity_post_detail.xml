@@ -6,6 +6,7 @@
         android:layout_height="match_parent"
         android:paddingHorizontal="10dp"
         tools:context=".Actitvity.PostDetailActivity"
+        android:id="@+id/post_detail_layout"
         >
 
     <TextView
@@ -77,6 +78,7 @@
             android:layout_below="@id/post_content"
             android:layout_marginTop="15dp"
             android:gravity="left"
+            android:clickable="true"
             android:id="@+id/posts_layout"
             android:orientation="horizontal">
 

@@ -1,11 +1,14 @@
 package com.srx.discussion.fragmentPager.User;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
@@ -14,13 +17,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.srx.discussion.Actitvity.MainActivity;
 import com.srx.discussion.Actitvity.login;
+import com.srx.discussion.Actitvity.userInfoDetail;
+import com.srx.discussion.Adapter.UserAdapter;
 import com.srx.discussion.R;
+import com.srx.discussion.entity.base.AndroidPyq;
 import com.srx.discussion.entity.base.AndroidUser;
 import com.srx.discussion.fragmentPager.Home.homeFragment;
 import com.srx.discussion.util.HttpUtil;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.srx.discussion.Actitvity.login.USER_ID;
 
@@ -33,6 +47,15 @@ public class userFragment extends Fragment {
     private TextView starPost;
     private TextView follower;
     private TextView following;
+    private RelativeLayout layout;
+    private RecyclerView recyclerView;
+    private UserAdapter adapter;
+    private List<AndroidPyq> pyqList = new ArrayList<>();
+    private Timer timer = new Timer();
+    private Timer globalTimer = new Timer();
+    private SwipeRefreshLayout refreshLayout;
+    private boolean pyqListFlag = false;
+
 
     public userFragment() {
         // Required empty public constructor
@@ -46,9 +69,34 @@ public class userFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
         initComponent(view);
         setClickListener();
+        initRecyclerView(view);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (pyqListFlag) {
+                    initRecyclerView(view);
+                    refreshLayout.setRefreshing(false);
+                }
+            }
+        });
         return view;
     }
 
+
+    public void initRecyclerView(View view) {
+        if (pyqList.size() > 0) {
+            recyclerView = view.findViewById(R.id.user_pager_recyclerView);
+            adapter = new UserAdapter(pyqList);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setUserInfo();
+    }
 
     public void setUserInfo() {
         if (HttpUtil.isLanded()) {
@@ -59,13 +107,16 @@ public class userFragment extends Fragment {
                         AndroidUser showUserInfo = (AndroidUser) HttpUtil.showUserInfo(USER_ID);
                         int starPostCount = HttpUtil.showUserStarPost(USER_ID).size();
                         int starPostsCount = HttpUtil.showUserStarPosts(USER_ID).size();
+                        List<AndroidPyq> list = HttpUtil.showPyqList(USER_ID);
+                        pyqList = list;
+                        pyqListFlag = true;
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 userNickname.setText(showUserInfo.getNickname());
                                 selfSignature.setText(showUserInfo.getSelfSignature());
-                                starPost.setText(starPostCount+"\n收藏贴子");
-                                starPosts.setText(starPostsCount+"\n收藏贴吧");
+                                starPost.setText(starPostCount + "\n收藏贴子");
+                                starPosts.setText(starPostsCount + "\n收藏贴吧");
                             }
                         });
                     }
@@ -91,10 +142,8 @@ public class userFragment extends Fragment {
                         }
                     }
                 }).start();
-            } else {
-                Intent intent = new Intent(getActivity(), login.class);
-                startActivity(intent);
             }
+//
         }
     }
 
@@ -103,7 +152,24 @@ public class userFragment extends Fragment {
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signOut();
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("确定要注销该账户嘛？")
+                        .setTitle("友情提示")
+                        .setNegativeButton("取消", null)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                signOut();
+                            }
+                        }).show();
+            }
+        });
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), userInfoDetail.class);
+                startActivity(intent);
             }
         });
     }
@@ -116,6 +182,8 @@ public class userFragment extends Fragment {
         this.starPost = view.findViewById(R.id.star_post);
         this.starPosts = view.findViewById(R.id.star_posts);
         this.userNickname = view.findViewById(R.id.user_nickName);
+        this.layout = view.findViewById(R.id.user_detail);
+        this.refreshLayout = view.findViewById(R.id.refresh);
     }
 
     public void signOut() {
@@ -130,4 +198,8 @@ public class userFragment extends Fragment {
         startActivity(intent);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

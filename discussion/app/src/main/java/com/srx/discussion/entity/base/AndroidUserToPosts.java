@@ -1,14 +1,14 @@
 package com.srx.discussion.entity.base;
 
 public class AndroidUserToPosts {
-    private int postId;
-    private String postTitle;
+    private int postsId;
+    private String postsTitle;
     private int userId;
     private String userNickname;
 
-    public AndroidUserToPosts(int postId, String postTitle, int userId, String userNickname) {
-        this.postId = postId;
-        this.postTitle = postTitle;
+    public AndroidUserToPosts(int postsId, String postsTitle, int userId, String userNickname) {
+        this.postsId = postsId;
+        this.postsTitle = postsTitle;
         this.userId = userId;
         this.userNickname = userNickname;
     }
@@ -16,20 +16,20 @@ public class AndroidUserToPosts {
     public AndroidUserToPosts() {
     }
 
-    public int getPostId() {
-        return postId;
+    public int getPostsId() {
+        return postsId;
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
+    public void setPostsId(int postId) {
+        this.postsId = postId;
     }
 
-    public String getPostTitle() {
-        return postTitle;
+    public String getPostsTitle() {
+        return postsTitle;
     }
 
-    public void setPostTitle(String postTitle) {
-        this.postTitle = postTitle;
+    public void setPostsTitle(String postTitle) {
+        this.postsTitle = postTitle;
     }
 
     public int getUserId() {
@@ -51,8 +51,8 @@ public class AndroidUserToPosts {
     @Override
     public String toString() {
         return "AndroidUserToPost{" +
-                "postId=" + postId +
-                ", postTitle='" + postTitle + '\'' +
+                "postsId=" + postsId +
+                ", postsTitle='" + postsTitle + '\'' +
                 ", userId=" + userId +
                 ", userNickname='" + userNickname + '\'' +
                 '}';

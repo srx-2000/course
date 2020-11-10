@@ -4,22 +4,23 @@ import java.util.List;
 
 public class PyqList {
 
+
     /**
-     * queryPyqListById : [{"createTime":"2020-10-26 21:32:17","nickname":"帅逼1号","pyqContext":"我承认我是一个大帅比了~","userId":1},{"createTime":"2020-11-02 13:27:28","nickname":"帅逼1号","pyqContext":"我不做人了jojo~","userId":1}]
+     * pyqList : [{"createTime":"2020-11-10 09:20:27","nickname":"帅逼1号","pyqContext":"我承认我是一个大帅比了~","userId":1},{"createTime":"2020-11-10 09:20:29","nickname":"帅逼1号","pyqContext":"我不做人了jojo~","userId":1}]
      */
-    private List<QueryPyqListByIdEntity> queryPyqListById;
+    private List<PyqListEntity> pyqList;
 
-    public void setQueryPyqListById(List<QueryPyqListByIdEntity> queryPyqListById) {
-        this.queryPyqListById = queryPyqListById;
+    public void setPyqList(List<PyqListEntity> pyqList) {
+        this.pyqList = pyqList;
     }
 
-    public List<QueryPyqListByIdEntity> getQueryPyqListById() {
-        return queryPyqListById;
+    public List<PyqListEntity> getPyqList() {
+        return pyqList;
     }
 
-    public class QueryPyqListByIdEntity {
+    public class PyqListEntity {
         /**
-         * createTime : 2020-10-26 21:32:17
+         * createTime : 2020-11-10 09:20:27
          * nickname : 帅逼1号
          * pyqContext : 我承认我是一个大帅比了~
          * userId : 1

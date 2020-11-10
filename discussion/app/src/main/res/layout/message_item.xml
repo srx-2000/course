@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/user_avatar"
+            android:src="@drawable/avatar1"
+            android:padding="10dp"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="测试用户1"
+            android:textColor="@color/darkBlack"
+            android:layout_marginTop="10dp"
+            android:id="@+id/nickname"
+            android:layout_toRightOf="@id/user_avatar"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2018-10-2"
+            android:textSize="10dp"
+            android:layout_below="@id/nickname"
+            android:id="@+id/time"
+            android:layout_toRightOf="@id/user_avatar"
+            />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/reply_content"
+            android:text="测试回复"
+            android:layout_below="@id/user_avatar"
+            android:textColor="@color/darkBlack"
+            android:layout_marginLeft="10dp"
+            />
+
+</RelativeLayout>

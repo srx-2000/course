@@ -10,5 +10,7 @@
     <color name="littleGrey">#747d8c</color>
     <color name="closeWhite">#f1f2f6</color>
     <color name="base">#FAFAFA</color>
-
+    <color name="white">#FFFFFF</color>
+    <color name="blue">#1e90ff</color>
+    <color name="darkBlue">#273c75</color>
 </resources>

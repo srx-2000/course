@@ -1,6 +1,7 @@
 package com.srx.discussion.Actitvity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 这里有一个大的概念设想——一个用户在登录之后这个session就会一直存在，直达用户注销登录
+ * 这里有一个大的概念设想————一个用户在登录之后这个session就会一直存在，直达用户注销登录
+ * 后发现无法使用静态变量进行存储，在每次重新进入之后，变量会被删除。
+ * 所以改为了使用sharePreference进行存储，如果用户选择了自动登录的选线之后，就在每次进入app时读取并自动重新获取session
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private com.srx.discussion.fragmentPager.message.messageFragment messageFragment;
     private com.srx.discussion.fragmentPager.Search.searchFragment searchFragment;
     private com.srx.discussion.fragmentPager.Home.homeFragment homeFragment;
+    private ImageView pushPyq;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +48,22 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         initViewPager();
         initFootBar();
-    }
+        pushPyq=findViewById(R.id.postpyq);
+        pushPyq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,insertPyq.class);
+                startActivity(intent);
+            }
+        });
 
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         pager.setCurrentItem(0);
+        homeFragment.getHomePostList(homeFragment.refreshCount);
     }
 
     @SuppressLint("ResourceAsColor")
@@ -92,7 +105,12 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 pager.setCurrentItem(position);
                 if (position == 3)
-                    userFragment.setUserInfo();
+                    if (!HttpUtil.isLanded()) {
+                        Intent intent = new Intent(MainActivity.this, login.class);
+                        startActivity(intent);
+                    } else {
+                        userFragment.setUserInfo();
+                    }
                 setImageFont(position);
             }
 
@@ -161,6 +179,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
     /**
      * viewPager的适配器

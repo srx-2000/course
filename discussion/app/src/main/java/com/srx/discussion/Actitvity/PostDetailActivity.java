@@ -2,6 +2,7 @@ package com.srx.discussion.Actitvity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Message;
@@ -21,17 +22,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.srx.discussion.Adapter.CommentAdapter;
 import com.srx.discussion.R;
+import com.srx.discussion.entity.DTO.ReplyList;
 import com.srx.discussion.entity.base.AndroidPostDetail;
-import com.srx.discussion.fragmentPager.Home.homeFragment;
+import com.srx.discussion.fragmentPager.detail.reply;
 import com.srx.discussion.util.HttpUtil;
 import com.srx.discussion.util.TimeUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+
+import static com.srx.discussion.Actitvity.loadingPage.LOADING_TO_PAGE;
 
 public class PostDetailActivity extends AppCompatActivity {
 
@@ -42,6 +47,7 @@ public class PostDetailActivity extends AppCompatActivity {
     private TextView postTitle;
     private TextView postContent;
     private TextView postsTitle;
+    private LinearLayout linearLayout;
     private List<AndroidPostDetail.CommentListEntity> commentList = new ArrayList<>();
     private boolean getDetailFlag = false;
     private AndroidPostDetail detail;
@@ -50,6 +56,10 @@ public class PostDetailActivity extends AppCompatActivity {
     private Integer previousSize = 0;
     private Integer refreshCount = 1;
     private TextView postTime;
+    private Integer postsId;
+    private com.srx.discussion.fragmentPager.detail.reply reply;
+
+
 
 
     @SuppressLint("ResourceAsColor")
@@ -57,17 +67,31 @@ public class PostDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+        initComponent();
         ActionBar supportActionBar = getSupportActionBar();
         supportActionBar.setTitle("");
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         supportActionBar.setBackgroundDrawable(new ColorDrawable(R.color.closeWhite));
-        initComponent();
+        supportActionBar.setSplitBackgroundDrawable(new ColorDrawable(R.color.closeWhite));
         getPostId();
+        setListener();
         initRecyclerViewList();
         setRecyclerViewListener();
         setData();
     }
 
+
+    public void setListener(){
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LOADING_TO_PAGE="postsPage";
+                Intent intent=new Intent(PostDetailActivity.this,loadingPage.class);
+                intent.putExtra("postId",postsId);
+                startActivity(intent);
+            }
+        });
+    }
 
     public void starPost() {
         if (HttpUtil.isLanded()) {
@@ -112,6 +136,7 @@ public class PostDetailActivity extends AppCompatActivity {
         postsTitle = findViewById(R.id.posts_title);
         postContent = findViewById(R.id.post_content);
         postTime = findViewById(R.id.time);
+        linearLayout=findViewById(R.id.posts_layout);
     }
 
 
@@ -144,12 +169,21 @@ public class PostDetailActivity extends AppCompatActivity {
         commentRecyclerView = findViewById(R.id.comment_recyclerView);
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new CommentAdapter(commentList);
-//        adapter.notifyDataSetChanged();
         adapter.setListener(new CommentAdapter.onItemClickListener() {
             @Override
             public void onReplyClick(View view, Integer commentId) {
                 //传递commentId到一个fragment或是别的东西上
                 //然后获取commentList
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<ReplyList.ReplyListEntity> replyListEntities = HttpUtil.showReplyList(commentId);
+                        EventBus.getDefault().post(replyListEntities);
+                    }
+                }).start();
+                if (reply == null)
+                    reply = new reply();
+                reply.show(getSupportFragmentManager(), "Dialog");
             }
         });
         commentRecyclerView.setAdapter(adapter);
@@ -180,7 +214,9 @@ public class PostDetailActivity extends AppCompatActivity {
             postContent.setText(detail.getPostContext());
             postTitle.setText(detail.getPostTitle());
             postsTitle.setText(detail.getBelongPostsName());
+            this.postsId=detail.getBelongPostsId();
             postTime.setText(TimeUtil.getDuringTime(detail.getPostCreateTime()));
+
         }
     }
 

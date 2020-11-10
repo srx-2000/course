@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".fragmentPager.detail.insertFragment"
+              android:orientation="horizontal"
+              android:id="@+id/insert_content_layout">
+
+    <!-- TODO: Update blank fragment layout -->
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/content_edit"
+            android:hint="说些什么吧"
+            android:layout_weight="1"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="发送"
+            android:id="@+id/send_content_btn"
+            android:background="@drawable/login_btn"/>
+
+</LinearLayout>

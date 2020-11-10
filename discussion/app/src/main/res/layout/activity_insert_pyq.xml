@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Actitvity.insertPyq">
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/arrow_back"
+            android:id="@+id/back"
+            android:clickable="true"
+            android:padding="10dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发布到我的主页"
+            android:textColor="@color/darkBlack"
+            android:layout_centerHorizontal="true"
+            android:padding="16dp"
+            android:id="@+id/myInfo_text"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发布"
+            android:layout_alignParentRight="true"
+            android:id="@+id/push_pyq"
+            android:padding="16dp"
+            android:clickable="false"
+            />
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/back"
+            android:hint="来把,尽情发挥吧"
+            android:gravity="top"
+            android:id="@+id/pyq_editText"/>
+
+</RelativeLayout>

@@ -74,7 +74,8 @@
             android:layout_below="@id/comment_content"
             android:gravity="right"
             android:clickable="true"
-            android:id="@+id/show_reply">
+            android:id="@+id/show_reply"
+            android:paddingBottom="10dp">
 
         <TextView
                 android:layout_width="wrap_content"

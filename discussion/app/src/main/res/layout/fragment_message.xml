@@ -19,10 +19,5 @@
             android:id="@+id/message_recyclerView"
             android:padding="10dp"/>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Fragment3"/>
 
 </LinearLayout>

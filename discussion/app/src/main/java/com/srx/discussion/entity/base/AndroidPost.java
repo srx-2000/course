@@ -1,6 +1,8 @@
 package com.srx.discussion.entity.base;
 
-public class AndroidPost {
+import java.io.Serializable;
+
+public class AndroidPost implements Serializable {
     private int CommentCount;
     private int belongPosts;
     private int postMan;

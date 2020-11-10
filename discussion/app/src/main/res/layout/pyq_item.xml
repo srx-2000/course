@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/avatar"
+            android:id="@+id/user_avatar"
+            android:paddingHorizontal="10dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_nickname"
+            android:text="测试用户1"
+            android:textSize="18dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/darkBlue"
+            android:layout_toRightOf="@id/user_avatar"
+            android:layout_marginTop="10dp"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pyq_content"
+            android:layout_below="@id/user_nickname"
+            android:text="朋友测试内容"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/darkBlack"
+            android:layout_alignLeft="@id/user_nickname"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pyq_time"
+            android:textSize="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_below="@id/pyq_content"
+            android:text="2018-11-01"
+            android:layout_marginTop="15dp"/>
+</RelativeLayout>

@@ -37,13 +37,13 @@ public abstract class MethodNameProvider {
     public static String getRoleList = "/getRoleList";
     public static String upUserRole = "/upUserRole";
     public static String downUserRole = "/downUserRole";
+    public static String showSinglePostsPostLst = "/f";
 
 
 //    public static String getPostsListWithRole = "/getPostsListWithRole";
 //    public static String queryPostsByTitle = "/queryPostsByTitle";
 //    public static String updatePostsName = "/updatePostsName";
 //    public static String showReplyList = "/c";
-//    public static String showPostLst = "/f";
 //    public static String loginFail_post = "/loginFail";
 //    public static String getCommentAndReplyCount = "/getCommentAndReplyCount";
 

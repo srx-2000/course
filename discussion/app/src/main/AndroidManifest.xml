@@ -13,13 +13,23 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".Actitvity.insertPyq">
+        </activity>
+        <activity android:name=".Actitvity.postsActivity">
+        </activity>
+        <activity android:name=".Actitvity.userInfoDetail">
+        </activity>
+        <activity android:name=".Actitvity.register">
+        </activity>
         <activity android:name=".Actitvity.login">
         </activity>
         <activity android:name=".Actitvity.loadingPage">
         </activity>
         <activity android:name=".Actitvity.PostDetailActivity">
         </activity>
-        <activity android:name=".Actitvity.MainActivity">
+        <activity
+                android:name=".Actitvity.MainActivity"
+                android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

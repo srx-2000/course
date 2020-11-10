@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户1号:"
+            android:id="@+id/first_reply_man"
+            android:textColor="@color/blue"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="回复"
+            android:textColor="@color/darkBlack"
+            android:id="@+id/reply_filling"
+            android:layout_toRightOf="@id/first_reply_man"
+            android:layout_marginLeft="5dp"
+            />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户2号:"
+            android:id="@+id/second_reply_man"
+            android:textColor="@color/blue"
+            android:layout_toRightOf="@id/reply_filling"
+            android:layout_marginLeft="5dp"
+            />
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@id/second_reply_man"
+            android:layout_marginLeft="5dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="回复的内容"
+                android:layout_weight="1"
+                android:textColor="@color/darkBlack"
+                android:id="@+id/reply_content"
+
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50分钟前"
+                android:layout_toRightOf="@id/reply_content"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/littleGrey"
+                android:layout_gravity="bottom"
+                android:id="@+id/reply_time"
+                />
+    </LinearLayout>
+
+</RelativeLayout>

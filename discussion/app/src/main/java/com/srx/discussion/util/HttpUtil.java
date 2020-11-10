@@ -218,6 +218,11 @@ public class HttpUtil {
                     .get()
                     .url(url + methodName + "?postsId=" + params[0] + "&downUserId=" + params[1])
                     .build();
+        } else if (methodName.equals(MethodNameProvider.showSinglePostsPostLst)) {
+            request = new Request.Builder()
+                    .get()
+                    .url(url + methodName + "?postsId=" + params[0] + "&currentPage=" + params[1] + "&pageSize=" + params[2])
+                    .build();
         }
         Call call = client.newCall(request);
         try {
@@ -271,6 +276,8 @@ public class HttpUtil {
             request = new Request.Builder()
                     .post(requestBody)
                     .url(url + methodName)
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
+
                     .build();
         } else if (methodName.equals(MethodNameProvider.insertReplyForComment_post)) {
             requestBody = new FormBody.Builder()
@@ -280,6 +287,7 @@ public class HttpUtil {
             request = new Request.Builder()
                     .post(requestBody)
                     .url(url + methodName)
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
                     .build();
         } else if (methodName.equals(MethodNameProvider.insertReplyForReply_post)) {
             requestBody = new FormBody.Builder()
@@ -290,6 +298,7 @@ public class HttpUtil {
             request = new Request.Builder()
                     .post(requestBody)
                     .url(url + methodName)
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
                     .build();
         } else if (methodName.equals(MethodNameProvider.insertPost_post)) {
             requestBody = new FormBody.Builder()
@@ -301,6 +310,7 @@ public class HttpUtil {
             request = new Request.Builder()
                     .post(requestBody)
                     .url(url + methodName)
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
                     .build();
         } else if (methodName.equals(MethodNameProvider.insertComment_post)) {
             requestBody = new FormBody.Builder()
@@ -310,6 +320,7 @@ public class HttpUtil {
             request = new Request.Builder()
                     .post(requestBody)
                     .url(url + methodName)
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
                     .build();
         }
         Call call = client.newCall(request);
@@ -363,7 +374,7 @@ public class HttpUtil {
                 e.printStackTrace();
             }
             Integer integer = Integer.valueOf(string);
-            if (integer>0) {
+            if (integer > 0) {
                 String header = response.header("Set-Cookie");
                 String sessionId = header.substring(11, 43);
                 JSESSIONID = sessionId;
@@ -416,7 +427,7 @@ public class HttpUtil {
      * @param targetComment
      * @return
      */
-    public static List<AndroidReply> showReplyList(Integer targetComment) {
+    public static List<ReplyList.ReplyListEntity> showReplyList(Integer targetComment) {
         List<AndroidReply> androidReplyList = new ArrayList<>();
         Response response = doGetMethod(MethodNameProvider.showAllReplyList, targetComment);
         String jsonString = null;
@@ -428,11 +439,7 @@ public class HttpUtil {
         Gson gson = new Gson();
         ReplyList jsonResult = gson.fromJson(jsonString, ReplyList.class);
         List<ReplyList.ReplyListEntity> replyList = jsonResult.getReplyList();
-        for (ReplyList.ReplyListEntity r : replyList) {
-            AndroidReply androidReply = new AndroidReply(r.getTargetComment(), r.getTargetReply(), r.getReplyMan(), r.getCreateTime(), r.getReplyManUsername(), r.getReplyContext());
-            androidReplyList.add(androidReply);
-        }
-        return androidReplyList;
+        return replyList;
     }
 
     /**
@@ -452,8 +459,8 @@ public class HttpUtil {
         }
         Gson gson = new Gson();
         PyqList jsonResult = gson.fromJson(jsonString, PyqList.class);
-        List<PyqList.QueryPyqListByIdEntity> queryPyqListById = jsonResult.getQueryPyqListById();
-        for (PyqList.QueryPyqListByIdEntity o : queryPyqListById) {
+        List<PyqList.PyqListEntity> queryPyqListById = jsonResult.getPyqList();
+        for (PyqList.PyqListEntity o : queryPyqListById) {
             pyqList.add(new AndroidPyq(o.getUserId(), o.getPyqContext(), o.getCreateTime(), o.getNickname()));
         }
         return pyqList;
@@ -551,13 +558,13 @@ public class HttpUtil {
             ErrorMessage errorMessage = parseErrorMessage(jsonString);
             String errorCode = errorMessage.getErrorCode();
             if (errorCode.equals("verificationMsg.success")) {
-                return "正在加入肯德基豪华套餐";
+                return "已经加入肯德基豪华套餐";
             } else
                 return "注册失败，出现莫名错误，请重试";
         } else if (usernameCode.equals("verificationMsg.username")) {
             return "该用户名已经被注册了，请换一个用户名";
         } else if (emailCode.equals("verificationMsg.email")) {
-            return "该邮箱已经被注册了，请换一个邮箱";
+            return "该邮箱已经被注册了，请换一个邮箱或登录？";
         } else
             return "出现莫名错误，请重试";
     }
@@ -751,7 +758,7 @@ public class HttpUtil {
         if (jsonString.contains("true"))
             return "回复删除成功";
         else
-            return "回复删除失败";
+            return "回复删除失败,请确认权限";
     }
 
     public static String deleteSingleComment(Integer postsId, Integer commentId) {
@@ -896,6 +903,31 @@ public class HttpUtil {
             return "被拉下马了";
         else
             return "还没被拉下马了";
+    }
+
+    public static Object showSinglePostsPostList(Integer postsId,Integer currentPage,Integer pageSize){
+        Response response = doGetMethod(MethodNameProvider.showSinglePostsPostLst, postsId,currentPage,pageSize);
+        String jsonString = null;
+        try {
+            ResponseBody body = response.body();
+            jsonString = body.string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        if (jsonString.contains("errorMessage.")) {
+            ErrorMessage errorMessage = parseErrorMessage(jsonString);
+            return errorMessage;
+        } else {
+            PostsPost homePost = gson.fromJson(jsonString, PostsPost.class);
+            List<PostsPost.PaginationQueryPostListEntity> homePostList = homePost.getPaginationQueryPostList();
+            List<AndroidPost> postList = new ArrayList<>();
+            for (PostsPost.PaginationQueryPostListEntity p : homePostList) {
+                AndroidPost androidPost = new AndroidPost(p.getCommentCount(), p.getPostsId(), p.getPostMan(), p.getPostId(), p.getPostContext(), p.getPostTitle(), p.getCreateTime(), p.getPostManNickname(), p.getBelongPostsName());
+                postList.add(androidPost);
+            }
+            return postList;
+        }
     }
 
     public static Boolean isLanded() {

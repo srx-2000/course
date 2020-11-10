@@ -28,26 +28,26 @@ import com.srx.discussion.entity.base.AndroidPost;
 import com.srx.discussion.entity.base.AndroidPostDetail;
 import com.srx.discussion.util.HttpUtil;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.nio.charset.IllegalCharsetNameException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+
+import static com.srx.discussion.Actitvity.loadingPage.LOADING_TO_PAGE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class homeFragment extends Fragment {
 
-    public static Integer POST_PAGE_SIZE =3;
+    public static Integer POST_PAGE_SIZE = 3;
     private List<AndroidPost> refreshList = new ArrayList<>();
     private String showMessage = "";
-    private Timer timer = new Timer();
     private Boolean postListFlag = false;
     private SwipeRefreshLayout refreshLayout;
-    private Integer refreshCount = 1;
+    public Integer refreshCount = 1;
     private Integer previousSize = 0;
     private static String TAG = "石荣兴";
     RecyclerView homeRecyclerView;
@@ -65,12 +65,10 @@ public class homeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         initComponent(view);
         setRecyclerViewListener();
-
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (postListFlag) {
-                    timer.cancel();
                     initRecyclerView(view);
                     refreshLayout.setRefreshing(false);
                 }
@@ -106,6 +104,7 @@ public class homeFragment extends Fragment {
                 }
 
             }
+
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -113,6 +112,13 @@ public class homeFragment extends Fragment {
             }
         });
     }
+
+
+//    @Subscribe(threadMode = ThreadMode.POSTING)
+//    public void getData(Object data){
+//        refreshList.addAll((List<AndroidPost>) data);
+//        return;
+//    }
 
     public void initComponent(View view) {
         refreshLayout = view.findViewById(R.id.home_refresh);
@@ -125,10 +131,11 @@ public class homeFragment extends Fragment {
             homeAdapter.setListener(new HomeAdapter.onItemClickListener() {
                 @Override
                 public void onItemSelectClick(View view, Integer postId) {
-                    Toast.makeText(getActivity(),"点击了"+postId,Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "onItemSelectClick: " + postId);
-                    Intent intent=new Intent(getActivity(), loadingPage.class);
-                    intent.putExtra("postId",postId);
+                    //设置转发节点
+                    LOADING_TO_PAGE = "postDetailPage";
+                    //开始转发
+                    Intent intent = new Intent(getActivity(), loadingPage.class);
+                    intent.putExtra("postId", postId);
                     startActivity(intent);
 //                    AndroidPostDetail androidPostDetail = HttpUtil.showPostDetail(postId, 1, COMMENT_PAGE_SIZE);
                 }
@@ -161,13 +168,6 @@ public class homeFragment extends Fragment {
         }).start();
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getHomePostList(1);
-
-    }
-
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -186,7 +186,6 @@ public class homeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        timer.cancel();
         refreshCount = 1;
         previousSize = 0;
     }
