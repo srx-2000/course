@@ -37,18 +37,23 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyHolder
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         AndroidPostDetail.CommentListEntity commentListEntity = commentList.get(position);
-        holder.floor.setText((position+1) + "楼");
+        holder.floor.setText((position + 1) + "楼");
         holder.commentContent.setText(commentListEntity.getCommentContext());
         holder.time.setText(TimeUtil.getDuringTime(commentListEntity.getCreateTime()));
         holder.userNickname.setText(commentListEntity.getCommentManUsername());
-        holder.replyCount.setText("共有"+commentListEntity.getReplyCount() + "条回复");
+        holder.replyCount.setText("共有" + commentListEntity.getReplyCount() + "条回复");
         holder.replyCount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onReplyClick(v,commentListEntity.getCommentId());
+                listener.onReplyClick(v, commentListEntity.getCommentId());
             }
         });
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onCommentClick(v,commentListEntity.getCommentId());
+            }
+        });
     }
 
     @Override
@@ -72,5 +77,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.MyHolder
 
     public interface onItemClickListener {
         void onReplyClick(View view, Integer commentId);
+
+        void onCommentClick(View view, Integer commentId);
     }
 }

@@ -16,6 +16,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.srx.discussion.R;
+import com.srx.discussion.entity.DTO.CommentToPost;
+import com.srx.discussion.entity.DTO.ReplyToComment;
 import com.srx.discussion.entity.DTO.ReplyToReply;
 import com.srx.discussion.util.HttpUtil;
 import org.greenrobot.eventbus.EventBus;
@@ -33,6 +35,7 @@ public class insertFragment extends BottomSheetDialogFragment {
     private Button sendContentBtn;
     private Integer targetComment;
     private Integer targetReply;
+    private Integer postId;
 
 
     public insertFragment() {
@@ -61,8 +64,20 @@ public class insertFragment extends BottomSheetDialogFragment {
             String[] split = data.split(":");
             targetReply = Integer.valueOf(split[1]);
             targetComment = Integer.valueOf(split[3]);
+            postId = null;
             Log.d(TAG, "onEvent: " + targetComment);
             Log.d(TAG, "onEvent: " + targetReply);
+        } else if (!data.contains("targetReply") && data.contains("commentId")) {
+            String[] split = data.split(":");
+            targetComment = Integer.valueOf(split[1]);
+            targetReply = null;
+            postId = null;
+            Log.d(TAG, "onEvent: " + targetComment);
+        } else if (data.contains("postId")) {
+            String[] split = data.split(":");
+            postId = Integer.valueOf(split[1]);
+            targetReply = null;
+            targetComment = null;
         }
     }
 
@@ -79,30 +94,78 @@ public class insertFragment extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 String contentString = insertFragment.this.content.getText().toString();
-                if (content != null || !content.equals("")) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ReplyToReply replyToReply = HttpUtil.insertReplyForReply(contentString, targetComment, targetReply);
-                            if (replyToReply != null) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        content.setText("");
-                                        layout.setVisibility(View.GONE);
-                                    }
-                                });
-                            } else {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity(), "评论失败", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
+                if (contentString.length() > 0) {
+                    if (targetReply == null && targetComment != null) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ReplyToComment replyToComment = HttpUtil.insertReplyForComment(contentString, targetComment);
+                                if (replyToComment != null) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            content.setText("");
+                                            layout.setVisibility(View.GONE);
+                                        }
+                                    });
+                                } else {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getActivity(), "评论失败", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             }
-                            Log.d(TAG, "run: " + replyToReply.getReplyContext());
-                        }
-                    }).start();
+                        }).start();
+                    } else if (targetReply != null&&targetComment!=null) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ReplyToReply replyToReply = HttpUtil.insertReplyForReply(contentString, targetComment, targetReply);
+                                if (replyToReply != null) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            content.setText("");
+                                            layout.setVisibility(View.GONE);
+                                        }
+                                    });
+                                } else {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getActivity(), "评论失败", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                                Log.d(TAG, "run: " + replyToReply.getReplyContext());
+                            }
+                        }).start();
+                    }else if(targetReply==null&&targetComment==null&&postId!=null){
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CommentToPost commentToPost = HttpUtil.insertComment(postId,contentString);
+                                if (commentToPost != null) {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            content.setText("");
+                                            layout.setVisibility(View.GONE);
+                                        }
+                                    });
+                                } else {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getActivity(), "评论失败", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        }).start();
+                    }
                 }
             }
         });

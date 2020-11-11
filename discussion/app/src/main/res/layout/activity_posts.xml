@@ -9,6 +9,7 @@
         tools:context=".Actitvity.postsActivity"
         >
 
+
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,12 +99,28 @@
             android:layout_marginTop="5dp"
             android:id="@+id/line"/>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@id/line"
-            android:layout_marginTop="5dp"
-            android:id="@+id/post_recyclerView"/>
+            android:id="@+id/post_refresh"
+            >
 
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:id="@+id/post_recyclerView"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/add_sign"
+            android:backgroundTint="@color/blue"
+            android:layout_margin="20dp"
+            android:id="@+id/add_button"/>
 
 </RelativeLayout>

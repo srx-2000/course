@@ -9,73 +9,80 @@
         android:id="@+id/post_detail_layout"
         >
 
-    <TextView
-            android:layout_width="wrap_content"
+    <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="17dp"
-            android:text="测试标题"
-            android:id="@+id/post_title"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/darkBlack"
-            android:fontFamily="sans-serif-black"
-            android:layout_marginLeft="10dp"
-            />
+            android:id="@+id/detail_head_layout"
+            android:clickable="true">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                android:text="测试标题"
+                android:id="@+id/post_title"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/darkBlack"
+                android:fontFamily="sans-serif-black"
+                android:layout_marginLeft="10dp"
+                />
 
-    <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/avatar1"
-            android:id="@+id/common_avatar"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/post_title"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
+        <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/avatar1"
+                android:id="@+id/common_avatar"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/post_title"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
 
-            />
+                />
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测试用户1"
-            android:textSize="14dp"
-            android:layout_toRightOf="@id/common_avatar"
-            android:id="@+id/user_nickName"
-            android:textColor="@color/darkBlack"
-            android:layout_marginLeft="5dp"
-            android:layout_below="@id/post_title"
-            android:layout_marginTop="10dp"
-            />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="测试用户1"
+                android:textSize="14dp"
+                android:layout_toRightOf="@id/common_avatar"
+                android:id="@+id/user_nickName"
+                android:textColor="@color/darkBlack"
+                android:layout_marginLeft="5dp"
+                android:layout_below="@id/post_title"
+                android:layout_marginTop="10dp"
+                />
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5分钟前"
-            android:textSize="10dp"
-            android:layout_toRightOf="@id/common_avatar"
-            android:id="@+id/time"
-            android:layout_marginLeft="5dp"
-            android:layout_below="@id/user_nickName"
-            android:layout_marginTop="5dp"
-            />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5分钟前"
+                android:textSize="10dp"
+                android:layout_toRightOf="@id/common_avatar"
+                android:id="@+id/time"
+                android:layout_marginLeft="5dp"
+                android:layout_below="@id/user_nickName"
+                android:layout_marginTop="5dp"
+                />
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="测试内容"
-            android:textSize="12dp"
-            android:textColor="@color/darkBlack"
-            android:fontFamily="sans-serif"
-            android:layout_below="@id/common_avatar"
-            android:id="@+id/post_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
-            />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="测试内容"
+                android:textSize="12dp"
+                android:textColor="@color/darkBlack"
+                android:fontFamily="sans-serif"
+                android:layout_below="@id/common_avatar"
+                android:id="@+id/post_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                />
+    </RelativeLayout>
+
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/closeWhite"
-            android:layout_below="@id/post_content"
+            android:layout_below="@id/detail_head_layout"
             android:layout_marginTop="15dp"
             android:gravity="left"
             android:clickable="true"

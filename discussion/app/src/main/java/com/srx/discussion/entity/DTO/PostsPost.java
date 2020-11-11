@@ -1,23 +1,35 @@
 package com.srx.discussion.entity.DTO;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PostsPost {
+public class PostsPost implements Serializable {
+
 
     /**
+     * postsTitle : 测试吧1
      * paginationQueryPostList : [{"postsId":1,"postManNickname":"帅逼2号","postContext":"第一次发帖成功！！！！","isLive":"1","postMan":2,"belongPostsName":"测试吧1","createTime":"2020-11-05 21:08:51","postTitle":"恭喜显示成功！","postId":10,"commentCount":0},{"postsId":1,"postManNickname":"帅逼2号","postContext":"第一次发帖成功！！！！","isLive":"1","postMan":2,"belongPostsName":"测试吧1","createTime":"2020-11-05 21:08:26","postTitle":"恭喜显示成功！","postId":9,"commentCount":0},{"postsId":1,"postManNickname":"帅逼2号","postContext":"第一次发帖成功！！！！","isLive":"1","postMan":2,"belongPostsName":"测试吧1","createTime":"2020-11-05 21:05:28","postTitle":"恭喜显示成功！","postId":8,"commentCount":0},{"postsId":1,"postManNickname":"帅逼2号","postContext":"第一次发帖成功！！！！","isLive":"1","postMan":2,"belongPostsName":"测试吧1","createTime":"2020-11-05 21:04:57","postTitle":"恭喜显示成功！","postId":7,"commentCount":0},{"postsId":1,"postManNickname":"帅逼2号","postContext":"第一次发帖成功！！！！","isLive":"1","postMan":2,"belongPostsName":"测试吧1","createTime":"2020-11-05 11:21:22","postTitle":"恭喜显示成功！","postId":6,"commentCount":0}]
      */
+    private String postsTitle;
     private List<PaginationQueryPostListEntity> paginationQueryPostList;
+
+    public void setPostsTitle(String postsTitle) {
+        this.postsTitle = postsTitle;
+    }
 
     public void setPaginationQueryPostList(List<PaginationQueryPostListEntity> paginationQueryPostList) {
         this.paginationQueryPostList = paginationQueryPostList;
+    }
+
+    public String getPostsTitle() {
+        return postsTitle;
     }
 
     public List<PaginationQueryPostListEntity> getPaginationQueryPostList() {
         return paginationQueryPostList;
     }
 
-    public class PaginationQueryPostListEntity {
+    public class PaginationQueryPostListEntity implements Serializable{
         /**
          * postsId : 1
          * postManNickname : 帅逼2号

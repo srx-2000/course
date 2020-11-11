@@ -8,13 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.srx.discussion.R;
 import com.srx.discussion.entity.DTO.ReplyList;
+import com.srx.discussion.entity.base.Message;
 
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyHolder> {
-    private List<ReplyList.ReplyListEntity> list;
+    private List<Message> list;
 
-    public MessageAdapter(List<ReplyList.ReplyListEntity> list) {
+    public MessageAdapter(List<Message> list) {
         this.list = list;
     }
 
@@ -28,10 +29,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyHolder
 
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.MyHolder holder, int position) {
-        ReplyList.ReplyListEntity replyListEntity = list.get(position);
-        holder.time.setText(replyListEntity.getCreateTime());
-        holder.nickname.setText(replyListEntity.getReplyManNickname());
-        holder.replyContent.setText(replyListEntity.getReplyContext());
+        Message message = list.get(position);
+        holder.time.setText(message.getCreateTime());
+        holder.nickname.setText(message.getUserNickname());
+        holder.replyContent.setText(message.getContent());
     }
 
     @Override

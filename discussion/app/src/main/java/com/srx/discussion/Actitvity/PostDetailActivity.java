@@ -10,10 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.srx.discussion.Adapter.CommentAdapter;
 import com.srx.discussion.R;
+import com.srx.discussion.entity.DTO.Post;
 import com.srx.discussion.entity.DTO.ReplyList;
 import com.srx.discussion.entity.base.AndroidPostDetail;
+import com.srx.discussion.fragmentPager.detail.insertFragment;
 import com.srx.discussion.fragmentPager.detail.reply;
 import com.srx.discussion.util.HttpUtil;
 import com.srx.discussion.util.TimeUtil;
@@ -56,10 +55,10 @@ public class PostDetailActivity extends AppCompatActivity {
     private Integer previousSize = 0;
     private Integer refreshCount = 1;
     private TextView postTime;
+    private RelativeLayout detailHeadLayout;
     private Integer postsId;
     private com.srx.discussion.fragmentPager.detail.reply reply;
-
-
+    private com.srx.discussion.fragmentPager.detail.insertFragment insertFragment;
 
 
     @SuppressLint("ResourceAsColor")
@@ -81,13 +80,13 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
 
-    public void setListener(){
+    public void setListener() {
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LOADING_TO_PAGE="postsPage";
-                Intent intent=new Intent(PostDetailActivity.this,loadingPage.class);
-                intent.putExtra("postId",postsId);
+                LOADING_TO_PAGE = "postsPage";
+                Intent intent = new Intent(PostDetailActivity.this, loadingPage.class);
+                intent.putExtra("postId", postsId);
                 startActivity(intent);
             }
         });
@@ -123,7 +122,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 return true;
             case R.id.star:
                 starPost();
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -136,7 +134,8 @@ public class PostDetailActivity extends AppCompatActivity {
         postsTitle = findViewById(R.id.posts_title);
         postContent = findViewById(R.id.post_content);
         postTime = findViewById(R.id.time);
-        linearLayout=findViewById(R.id.posts_layout);
+        linearLayout = findViewById(R.id.posts_layout);
+        detailHeadLayout=findViewById(R.id.detail_head_layout);
     }
 
 
@@ -185,6 +184,35 @@ public class PostDetailActivity extends AppCompatActivity {
                     reply = new reply();
                 reply.show(getSupportFragmentManager(), "Dialog");
             }
+
+            @Override
+            public void onCommentClick(View view, Integer commentId) {
+                if (HttpUtil.isLanded()) {
+                    if (insertFragment == null)
+                        insertFragment = new insertFragment();
+                    insertFragment.show(getSupportFragmentManager(), "Dialog");
+                    EventBus.getDefault().postSticky("commentId:" + commentId);
+                } else {
+                    Intent intent = new Intent(PostDetailActivity.this, login.class);
+                    startActivity(intent);
+                    Toast.makeText(PostDetailActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        detailHeadLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (HttpUtil.isLanded()) {
+                    if (insertFragment == null)
+                        insertFragment = new insertFragment();
+                    insertFragment.show(getSupportFragmentManager(), "Dialog");
+                    EventBus.getDefault().postSticky("postId:" + postId);
+                } else {
+                    Intent intent = new Intent(PostDetailActivity.this, login.class);
+                    startActivity(intent);
+                    Toast.makeText(PostDetailActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
         commentRecyclerView.setAdapter(adapter);
     }
@@ -214,7 +242,7 @@ public class PostDetailActivity extends AppCompatActivity {
             postContent.setText(detail.getPostContext());
             postTitle.setText(detail.getPostTitle());
             postsTitle.setText(detail.getBelongPostsName());
-            this.postsId=detail.getBelongPostsId();
+            this.postsId = detail.getBelongPostsId();
             postTime.setText(TimeUtil.getDuringTime(detail.getPostCreateTime()));
 
         }

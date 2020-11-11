@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.srx.discussion.Actitvity.loadingPage;
+import com.srx.discussion.Actitvity.login;
 import com.srx.discussion.Adapter.SearchAdapter;
 import com.srx.discussion.R;
 import com.srx.discussion.entity.base.AndroidPosts;
@@ -50,6 +51,7 @@ public class searchFragment extends Fragment {
     private SearchAdapter adapter;
     private Integer userId = 0;
     private Timer timer1 = new Timer();
+    private Timer timer2 = new Timer();
     public static Integer BLURRY_SEARCH_PAGE_SIZE = 50;
     private List<AndroidPosts> searchList = new ArrayList<>();
 
@@ -66,19 +68,59 @@ public class searchFragment extends Fragment {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
+                getData();
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                setData();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setData();
+                    }
+                });
             }
         };
         timer1.schedule(task, 0, 1000);
+        TimerTask task1 = new TimerTask() {
+            @Override
+            public void run() {
+                if (USER_ID == 0) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.setVisibility(View.GONE);
+                            noPosts.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
+            }
+        };
+        timer2.schedule(task1, 0, 1000);
         setSearchView();
+        timer();
         return view;
     }
 
+
+    public void getData() {
+        if (USER_ID != 0) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    List<AndroidUserToPosts> androidUserToPosts = HttpUtil.showUserStarPosts(USER_ID);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("list", (Serializable) androidUserToPosts);
+                    bundle.putSerializable("userId", USER_ID);
+                    Message message = new Message();
+                    message.obj = bundle;
+                    message.what = 1;
+                    handler.sendMessage(message);
+                }
+            }).start();
+        }
+    }
 
     public void setSearchView() {
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -104,36 +146,13 @@ public class searchFragment extends Fragment {
 
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        SharedPreferences sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        String username = sp.getString("username", "");
-        String password = sp.getString("password", "");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Integer login = HttpUtil.login(username, password);
-                List<AndroidUserToPosts> androidUserToPosts = HttpUtil.showUserStarPosts(login);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("list", (Serializable) androidUserToPosts);
-                bundle.putSerializable("userId", login);
-                Message message = new Message();
-                message.obj = bundle;
-                message.what = 1;
-                handler.sendMessage(message);
-            }
-        }).start();
-        timer();
-    }
-
     public void timer() {
         TimerTask task2 = new TimerTask() {
             @Override
             public void run() {
                 if (postsListFlag) {
                     timer.cancel();
-                    timer1.cancel();
+
                 }
             }
         };
@@ -191,7 +210,7 @@ public class searchFragment extends Fragment {
                 case 1:
                     Bundle bundle = (Bundle) msg.obj;
                     List<AndroidUserToPosts> list = (List<AndroidUserToPosts>) bundle.get("list");
-                    postsList.addAll(list);
+                    postsList=(list);
                     userId = bundle.getInt("userId");
                     postsListFlag = true;
                     break;
@@ -208,5 +227,6 @@ public class searchFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         globalTimer.cancel();
+        timer2.cancel();
     }
 }

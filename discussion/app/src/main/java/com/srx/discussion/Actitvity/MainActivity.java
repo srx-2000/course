@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         initViewPager();
         initFootBar();
-        pushPyq=findViewById(R.id.postpyq);
+        pushPyq = findViewById(R.id.postpyq);
         pushPyq.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this,insertPyq.class);
+                Intent intent = new Intent(MainActivity.this, insertPyq.class);
                 startActivity(intent);
             }
         });
@@ -111,6 +111,14 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         userFragment.setUserInfo();
                     }
+                if (position == 1) {
+                    if (!HttpUtil.isLanded()) {
+                        Intent intent = new Intent(MainActivity.this, login.class);
+                        startActivity(intent);
+                    } else {
+                        searchFragment.setData();
+                    }
+                }
                 setImageFont(position);
             }
 
@@ -179,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     /**

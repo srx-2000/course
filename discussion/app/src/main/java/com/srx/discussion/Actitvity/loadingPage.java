@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.srx.discussion.R;
+import com.srx.discussion.entity.DTO.PostsPost;
 import com.srx.discussion.entity.base.AndroidPost;
 import com.srx.discussion.entity.base.AndroidPostDetail;
 import com.srx.discussion.util.HttpUtil;
@@ -62,13 +63,15 @@ public class loadingPage extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        int postId = intent.getIntExtra("postId", 1);
+                        int postsId = intent.getIntExtra("postId", 1);
                         Message message = new Message();
-                        Integer postCount = HttpUtil.getPostCount(postId);
-                        List<AndroidPost> postList = (List<AndroidPost>) HttpUtil.showSinglePostsPostList(postId, 1, POSTS_PAGE_SIZE);
+                        Integer postCount = HttpUtil.getPostCount(postsId);
+                        PostsPost post = (PostsPost) HttpUtil.showSinglePostsPostList(postsId, 1, POSTS_PAGE_SIZE);
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("postList", (Serializable) postList);
+                        bundle.putSerializable("postList", (Serializable) post.getPaginationQueryPostList());
                         bundle.putInt("postCount", postCount);
+                        bundle.putString("postName", post.getPostsTitle());
+                        bundle.putInt("postsId", postsId);
                         message.obj = bundle;
                         message.what = 2;
                         handler.sendMessage(message);

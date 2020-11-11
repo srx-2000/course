@@ -38,6 +38,10 @@ public abstract class MethodNameProvider {
     public static String upUserRole = "/upUserRole";
     public static String downUserRole = "/downUserRole";
     public static String showSinglePostsPostLst = "/f";
+    public static String showUserPostList = "/getPostMessage";
+    public static String showUserCommentList = "/getCommentMessage";
+    public static String showUserReplyList = "/getReplyMessage";
+
 
 
 //    public static String getPostsListWithRole = "/getPostsListWithRole";

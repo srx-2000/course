@@ -13,6 +13,8 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true">
+        <activity android:name=".Actitvity.addPost">
+        </activity>
         <activity android:name=".Actitvity.insertPyq">
         </activity>
         <activity android:name=".Actitvity.postsActivity">

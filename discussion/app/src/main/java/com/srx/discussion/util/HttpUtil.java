@@ -223,6 +223,24 @@ public class HttpUtil {
                     .get()
                     .url(url + methodName + "?postsId=" + params[0] + "&currentPage=" + params[1] + "&pageSize=" + params[2])
                     .build();
+        } else if (methodName.equals(MethodNameProvider.showUserPostList)) {
+            request = new Request.Builder()
+                    .get()
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
+                    .url(url + methodName)
+                    .build();
+        } else if (methodName.equals(MethodNameProvider.showUserCommentList)) {
+            request = new Request.Builder()
+                    .get()
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
+                    .url(url + methodName)
+                    .build();
+        } else if (methodName.equals(MethodNameProvider.showUserReplyList)) {
+            request = new Request.Builder()
+                    .get()
+                    .header("Cookie", "JSESSIONID=" + JSESSIONID)
+                    .url(url + methodName)
+                    .build();
         }
         Call call = client.newCall(request);
         try {
@@ -496,7 +514,7 @@ public class HttpUtil {
         Gson gson = new Gson();
         StarPosts jsonResult = gson.fromJson(jsonString, StarPosts.class);
         List<StarPosts.QueryUserStarPostsForAndroidEntity> queryUserStarPostsForAndroid = jsonResult.getQueryUserStarPostsForAndroid();
-        for (StarPosts.QueryUserStarPostsForAndroidEntity o : queryUserStarPostsForAndroid) {
+         for (StarPosts.QueryUserStarPostsForAndroidEntity o : queryUserStarPostsForAndroid) {
             starPostsList.add(new AndroidUserToPosts(o.getPostsId(), o.getPostsName(), o.getUserId(), o.getUserNickname()));
         }
         return starPostsList;
@@ -584,7 +602,7 @@ public class HttpUtil {
     }
 
     public static ReplyToComment insertReplyForComment(String replyContext, Integer targetComment) {
-        Response response = doGetMethod(MethodNameProvider.insertReplyForComment_post, replyContext, targetComment);
+        Response response = doPostMethod(MethodNameProvider.insertReplyForComment_post, replyContext, targetComment);
         String jsonString = null;
         try {
             jsonString = response.body().string();
@@ -624,7 +642,7 @@ public class HttpUtil {
     }
 
     public static CommentToPost insertComment(Integer targetPost, String commentContext) {
-        Response response = doGetMethod(MethodNameProvider.insertComment_post, commentContext, targetPost);
+        Response response = doPostMethod(MethodNameProvider.insertComment_post, commentContext, targetPost);
         String jsonString = null;
         try {
             jsonString = response.body().string();
@@ -905,8 +923,8 @@ public class HttpUtil {
             return "还没被拉下马了";
     }
 
-    public static Object showSinglePostsPostList(Integer postsId,Integer currentPage,Integer pageSize){
-        Response response = doGetMethod(MethodNameProvider.showSinglePostsPostLst, postsId,currentPage,pageSize);
+    public static Object showSinglePostsPostList(Integer postsId, Integer currentPage, Integer pageSize) {
+        Response response = doGetMethod(MethodNameProvider.showSinglePostsPostLst, postsId, currentPage, pageSize);
         String jsonString = null;
         try {
             ResponseBody body = response.body();
@@ -920,14 +938,53 @@ public class HttpUtil {
             return errorMessage;
         } else {
             PostsPost homePost = gson.fromJson(jsonString, PostsPost.class);
-            List<PostsPost.PaginationQueryPostListEntity> homePostList = homePost.getPaginationQueryPostList();
-            List<AndroidPost> postList = new ArrayList<>();
-            for (PostsPost.PaginationQueryPostListEntity p : homePostList) {
-                AndroidPost androidPost = new AndroidPost(p.getCommentCount(), p.getPostsId(), p.getPostMan(), p.getPostId(), p.getPostContext(), p.getPostTitle(), p.getCreateTime(), p.getPostManNickname(), p.getBelongPostsName());
-                postList.add(androidPost);
-            }
-            return postList;
+            return homePost;
         }
+    }
+
+    public static List<Post.QueryPostListByUserIdEntity> showUserPostList() {
+        List<Post.QueryPostListByUserIdEntity> list = new ArrayList();
+        Response response = doGetMethod(MethodNameProvider.showUserPostList);
+        String jsonString = null;
+        try {
+            ResponseBody body = response.body();
+            jsonString = body.string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        Post post = gson.fromJson(jsonString, Post.class);
+        return post.getQueryPostListByUserId();
+    }
+
+    public static List<Comment.QueryCommentListByUserIdEntity> showUserCommentList() {
+        List<Comment.QueryCommentListByUserIdEntity> list = new ArrayList();
+        Response response = doGetMethod(MethodNameProvider.showUserCommentList);
+        String jsonString = null;
+        try {
+            ResponseBody body = response.body();
+            jsonString = body.string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        Comment comment = gson.fromJson(jsonString, Comment.class);
+        return comment.getQueryCommentListByUserId();
+    }
+
+    public static List<Reply.QueryReplyListByUserIdEntity> showUserReplyList() {
+        List<Reply.QueryReplyListByUserIdEntity> list = new ArrayList();
+        Response response = doGetMethod(MethodNameProvider.showUserReplyList);
+        String jsonString = null;
+        try {
+            ResponseBody body = response.body();
+            jsonString = body.string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Gson gson = new Gson();
+        Reply reply = gson.fromJson(jsonString, Reply.class);
+        return reply.getQueryReplyListByUserId();
     }
 
     public static Boolean isLanded() {

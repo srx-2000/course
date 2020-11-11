@@ -16,10 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.srx.discussion.Adapter.postsAdapter;
 import com.srx.discussion.R;
 import com.srx.discussion.entity.DTO.ErrorMessage;
-import com.srx.discussion.entity.base.AndroidPost;
+import com.srx.discussion.entity.DTO.PostsPost;
 import com.srx.discussion.entity.base.AndroidUserToPosts;
 import com.srx.discussion.util.HttpUtil;
 
@@ -37,7 +39,7 @@ public class postsActivity extends AppCompatActivity {
     private TextView postCount;
     private Button follow;
     private ImageView back;
-    private List<AndroidPost> postList = new ArrayList<>();
+    private List<PostsPost.PaginationQueryPostListEntity> postList = new ArrayList<>();
     private postsAdapter adapter;
     public static Integer POSTS_PAGE_SIZE = 5;
     private String postsTitleString;
@@ -46,7 +48,9 @@ public class postsActivity extends AppCompatActivity {
     private boolean postListFlag = false;
     private String showMessage = "";
     private boolean isStar = false;
-
+    private Integer postsId = 1;
+    private SwipeRefreshLayout refreshLayout;
+    private FloatingActionButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,18 @@ public class postsActivity extends AppCompatActivity {
         initRecyclerView();
         getData();
         setListener();
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (postListFlag) {
+                    initRecyclerView();
+                    refreshLayout.setRefreshing(false);
+                }else{
+                    getPostList(refreshCount);
+                }
+            }
+        });
+
     }
 
 
@@ -71,9 +87,11 @@ public class postsActivity extends AppCompatActivity {
         Bundle bundle = intent.getBundleExtra("postsBundle");
         if (bundle != null) {
             int postCount = bundle.getInt("postCount");
-            List<AndroidPost> postList = (List<AndroidPost>) bundle.get("postList");
-            postsTitleString = postList.get(0).getBelongPostsName();
+            int postsId = bundle.getInt("postsId");
+            List<PostsPost.PaginationQueryPostListEntity> postList = (List<PostsPost.PaginationQueryPostListEntity>) bundle.get("postList");
+            postsTitleString = bundle.getString("postName");
             postsTitle.setText(postsTitleString);
+            this.postsId = postsId;
             this.postCount.setText(postCount + "");
             this.postList.addAll(postList);
         }
@@ -90,6 +108,7 @@ public class postsActivity extends AppCompatActivity {
                 //开始转发
                 Intent intent = new Intent(postsActivity.this, loadingPage.class);
                 intent.putExtra("postId", postId);
+
                 startActivity(intent);
             }
         });
@@ -103,7 +122,8 @@ public class postsActivity extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    postList.addAll((List<AndroidPost>) msg.obj);
+                    PostsPost post = (PostsPost) msg.obj;
+                    postList.addAll(post.getPaginationQueryPostList());
                     break;
                 case 2:
                     showMessage = ((ErrorMessage) msg.obj).getErrorMessage();
@@ -113,17 +133,17 @@ public class postsActivity extends AppCompatActivity {
     };
 
     public void getPostList(Integer refreshCount) {
+        postListFlag=false;
+        previousSize = postList.size();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                postListFlag = false;
-                previousSize = postList.size();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Object result = HttpUtil.showSinglePostsPostList(postList.get(0).getBelongPosts(), refreshCount, POSTS_PAGE_SIZE);
+                        Object result = HttpUtil.showSinglePostsPostList(postsId, refreshCount, POSTS_PAGE_SIZE);
                         Message message = new Message();
-                        if (result instanceof List) {
+                        if (result instanceof PostsPost) {
                             message.what = 1;
                             message.obj = result;
                             handler.sendMessage(message);
@@ -146,7 +166,7 @@ public class postsActivity extends AppCompatActivity {
             public void run() {
                 List<AndroidUserToPosts> androidUserToPosts = HttpUtil.showUserStarPosts(USER_ID);
                 for (AndroidUserToPosts u : androidUserToPosts) {
-                    if (u.getPostsId() == postList.get(0).getBelongPosts()) {
+                    if (u.getPostsId() == postsId) {
                         isStar = true;
                         runOnUiThread(new Runnable() {
                             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -163,6 +183,14 @@ public class postsActivity extends AppCompatActivity {
     }
 
     public void setListener() {
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(postsActivity.this,addPost.class);
+                intent.putExtra("postsId",postsId);
+                startActivity(intent);
+            }
+        });
         follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +199,7 @@ public class postsActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             if (isStar) {
-                                String s = HttpUtil.unStarPosts(postList.get(0).getBelongPosts());
+                                String s = HttpUtil.unStarPosts(postsId);
                                 if (s.equals("帖吧取关成功")) {
                                     isStar = false;
                                     runOnUiThread(new Runnable() {
@@ -184,7 +212,7 @@ public class postsActivity extends AppCompatActivity {
                                     });
                                 }
                             } else {
-                                String s = HttpUtil.starPosts(postList.get(0).getBelongPosts());
+                                String s = HttpUtil.starPosts(postsId);
                                 if (s.equals("帖吧收藏成功")) {
                                     isStar = true;
                                     runOnUiThread(new Runnable() {
@@ -259,5 +287,7 @@ public class postsActivity extends AppCompatActivity {
         postCount = findViewById(R.id.post_count);
         follow = findViewById(R.id.follow);
         back = findViewById(R.id.back);
+        refreshLayout = findViewById(R.id.post_refresh);
+        addButton=findViewById(R.id.add_button);
     }
 }

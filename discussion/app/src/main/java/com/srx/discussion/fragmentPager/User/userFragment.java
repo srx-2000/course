@@ -192,6 +192,7 @@ public class userFragment extends Fragment {
         edit = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE).edit();
         edit.clear();
         edit.commit();
+        USER_ID=0;
         HttpUtil.clearSession();
         Toast.makeText(getActivity(), "退出成功!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), MainActivity.class);

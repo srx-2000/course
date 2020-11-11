@@ -9,21 +9,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 import com.srx.discussion.R;
-import com.srx.discussion.entity.base.AndroidPost;
+import com.srx.discussion.entity.DTO.PostsPost;
 import com.srx.discussion.util.TimeUtil;
 
 import java.util.List;
 
 public class postsAdapter extends RecyclerView.Adapter<postsAdapter.MyHolder> {
 
-    private List<AndroidPost> postList;
+    private List<PostsPost.PaginationQueryPostListEntity> postList;
     private onItemClickListener listener;
 
     public void setListener(onItemClickListener listener) {
         this.listener = listener;
     }
 
-    public postsAdapter(List<AndroidPost> postList) {
+    public postsAdapter(List<PostsPost.PaginationQueryPostListEntity> postList) {
         this.postList = postList;
     }
 
@@ -37,11 +37,11 @@ public class postsAdapter extends RecyclerView.Adapter<postsAdapter.MyHolder> {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
-        AndroidPost androidPost = postList.get(position);
+        PostsPost.PaginationQueryPostListEntity androidPost = postList.get(position);
         holder.postTitle.setText(androidPost.getPostTitle());
         holder.postTime.setText(TimeUtil.getDuringTime(androidPost.getCreateTime()));
         holder.postManNickname.setText(androidPost.getPostManNickname());
-        holder.postContent.setText(androidPost.getPostContent());
+        holder.postContent.setText(androidPost.getPostContext());
         holder.commentCount.setText(androidPost.getCommentCount() + "");
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
