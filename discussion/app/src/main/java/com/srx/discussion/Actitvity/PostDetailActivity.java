@@ -190,7 +190,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 if (HttpUtil.isLanded()) {
                     if (insertFragment == null)
                         insertFragment = new insertFragment();
-                    insertFragment.show(getSupportFragmentManager(), "Dialog");
+                        insertFragment.show(getSupportFragmentManager(), "Dialog");
                     EventBus.getDefault().postSticky("commentId:" + commentId);
                 } else {
                     Intent intent = new Intent(PostDetailActivity.this, login.class);

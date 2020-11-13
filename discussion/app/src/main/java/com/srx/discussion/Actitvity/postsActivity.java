@@ -67,12 +67,9 @@ public class postsActivity extends AppCompatActivity {
                 if (postListFlag) {
                     initRecyclerView();
                     refreshLayout.setRefreshing(false);
-                }else{
-                    getPostList(refreshCount);
                 }
             }
         });
-
     }
 
 
@@ -80,6 +77,12 @@ public class postsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         isStar();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getPostList(refreshCount);
     }
 
     public void getData() {
@@ -93,7 +96,7 @@ public class postsActivity extends AppCompatActivity {
             postsTitle.setText(postsTitleString);
             this.postsId = postsId;
             this.postCount.setText(postCount + "");
-            this.postList.addAll(postList);
+            this.postList = postList;
         }
     }
 
@@ -112,6 +115,7 @@ public class postsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -123,7 +127,7 @@ public class postsActivity extends AppCompatActivity {
             switch (msg.what) {
                 case 1:
                     PostsPost post = (PostsPost) msg.obj;
-                    postList.addAll(post.getPaginationQueryPostList());
+                    postList=(post.getPaginationQueryPostList());
                     break;
                 case 2:
                     showMessage = ((ErrorMessage) msg.obj).getErrorMessage();
@@ -133,7 +137,7 @@ public class postsActivity extends AppCompatActivity {
     };
 
     public void getPostList(Integer refreshCount) {
-        postListFlag=false;
+        postListFlag = false;
         previousSize = postList.size();
         new Thread(new Runnable() {
             @Override
@@ -186,8 +190,8 @@ public class postsActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(postsActivity.this,addPost.class);
-                intent.putExtra("postsId",postsId);
+                Intent intent = new Intent(postsActivity.this, addPost.class);
+                intent.putExtra("postsId", postsId);
                 startActivity(intent);
             }
         });
@@ -288,6 +292,6 @@ public class postsActivity extends AppCompatActivity {
         follow = findViewById(R.id.follow);
         back = findViewById(R.id.back);
         refreshLayout = findViewById(R.id.post_refresh);
-        addButton=findViewById(R.id.add_button);
+        addButton = findViewById(R.id.add_button);
     }
 }
