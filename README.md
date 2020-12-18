@@ -49,4 +49,4 @@
 
 **discussion：** 实验四——discussion前端实现
 
-* 待完成
+* 已实现，具体功能见https://github.com/srx-2000/discussion 中的**开发进度.md**
